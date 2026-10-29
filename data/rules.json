@@ -1,0 +1,37 @@
+[
+  {
+    "rule_id": "R-REQUIRED",
+    "kind": "required_fields",
+    "fields": [
+      "title",
+      "duration_seconds",
+      "copyright_status"
+    ],
+    "severity": "MISSING",
+    "message": "Required material information is missing",
+    "enabled": true
+  },
+  {
+    "rule_id": "R-AUTH",
+    "kind": "copyright_expired",
+    "severity": "BLOCK",
+    "message": "Copyright authorization expired",
+    "enabled": true
+  },
+  {
+    "rule_id": "R-FORBIDDEN",
+    "kind": "forbidden_claim",
+    "pattern": "guaranteed cure|100% effective",
+    "severity": "BLOCK",
+    "message": "Unsupported absolute claim",
+    "enabled": true
+  },
+  {
+    "rule_id": "R-REVIEW",
+    "kind": "review_claim",
+    "pattern": "preliminary benefit|results may vary",
+    "severity": "REVIEW",
+    "message": "Claim needs human review",
+    "enabled": true
+  }
+]

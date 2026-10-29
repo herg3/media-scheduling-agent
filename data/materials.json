@@ -1,0 +1,96 @@
+[
+  {
+    "material_id": "M01",
+    "metadata": {
+      "title": "Synthetic training material",
+      "duration_seconds": 30,
+      "copyright_status": "authorized",
+      "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+      "content_tags": [
+        "synthetic"
+      ],
+      "claims": [],
+      "supplement_available": false
+    },
+    "source_id": "synthetic-main-01"
+  },
+  {
+    "material_id": "M02",
+    "metadata": {
+      "title": "Synthetic training material",
+      "duration_seconds": 30,
+      "copyright_status": null,
+      "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+      "content_tags": [
+        "synthetic"
+      ],
+      "claims": [],
+      "supplement_available": false
+    },
+    "source_id": "synthetic-main-02"
+  },
+  {
+    "material_id": "M03",
+    "metadata": {
+      "title": "Synthetic training material",
+      "duration_seconds": 30,
+      "copyright_status": "authorized",
+      "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+      "content_tags": [
+        "synthetic"
+      ],
+      "claims": [
+        "Guaranteed cure for every disease"
+      ],
+      "supplement_available": false
+    },
+    "source_id": "synthetic-main-03"
+  },
+  {
+    "material_id": "M04",
+    "metadata": {
+      "title": "Synthetic training material",
+      "duration_seconds": 30,
+      "copyright_status": null,
+      "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+      "content_tags": [
+        "synthetic"
+      ],
+      "claims": [],
+      "supplement_available": true
+    },
+    "source_id": "synthetic-main-04"
+  },
+  {
+    "material_id": "M05",
+    "metadata": {
+      "title": "Synthetic training material",
+      "duration_seconds": 30,
+      "copyright_status": "authorized",
+      "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+      "content_tags": [
+        "synthetic"
+      ],
+      "claims": [
+        "Results may vary; preliminary benefit claim"
+      ],
+      "supplement_available": false
+    },
+    "source_id": "synthetic-main-05"
+  },
+  {
+    "material_id": "M06",
+    "metadata": {
+      "title": "Synthetic training material",
+      "duration_seconds": 30,
+      "copyright_status": null,
+      "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+      "content_tags": [
+        "synthetic"
+      ],
+      "claims": [],
+      "supplement_available": true
+    },
+    "source_id": "synthetic-main-06"
+  }
+]

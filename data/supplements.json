@@ -1,0 +1,26 @@
+[
+  {
+    "supplement_id": "S04",
+    "material_id": "M04",
+    "fields": {
+      "copyright_status": "authorized"
+    },
+    "source_id": "synthetic-supplement-04"
+  },
+  {
+    "supplement_id": "S06A",
+    "material_id": "M06",
+    "fields": {
+      "copyright_status": "authorized"
+    },
+    "source_id": "synthetic-supplement-06a"
+  },
+  {
+    "supplement_id": "S06B",
+    "material_id": "M06",
+    "fields": {
+      "copyright_status": "rejected"
+    },
+    "source_id": "synthetic-supplement-06b"
+  }
+]
