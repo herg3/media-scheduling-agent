@@ -6,6 +6,7 @@ import json
 import platform
 import sqlite3
 import subprocess
+import sys
 
 from .contracts import display_time, parse_time
 from .policy import is_originally_authorized
@@ -18,16 +19,17 @@ def item_result(context, termination_reason, questions):
     status = review.get("review_status", "unknown")
     draft = context.repo.read_draft(req.request_id, material)
     save = context.last_save
-    error = context.last_error
+    error = context.save_error or context.last_error
     is_current = bool(save and save.get("is_current"))
     save_status = save["save_status"] if save else "not_attempted"
-    if error and error["code"] == "SAVE_OUTCOME_UNKNOWN":
-        save_status = "unknown"
+    if context.save_error:
+        save_status = "unknown" if context.save_error["code"] == "SAVE_OUTCOME_UNKNOWN" else "failed"
         is_current = False
-    elif error and error["code"] in {"SAVE_FAILED", "DB_BUSY", "SLOT_CONFLICT", "REVISION_CONFLICT",
-                                     "CONFIRMATION_MISMATCH", "FACTS_CHANGED"}:
-        save_status = "failed"
-        is_current = False
+    if is_current and draft:
+        is_current = bool(status == "pass" and all(
+            review.get(key) == draft.get(key) for key in ("material_version", "rules_version")))
+        if context.suggested_at and context.suggested_at != draft["proposed_at"]:
+            is_current = False
     if status == "blocked" or (error and error["code"] == "RULE_BLOCKED"):
         task_status = "blocked"
         is_current = False
@@ -67,8 +69,17 @@ def item_result(context, termination_reason, questions):
         "failed": "本次草稿保存失败，未记为完成。",
         "incomplete": "任务未完成；保留已知实际状态，请查看原因与Trace。",
     }
+    reason_code = error["code"] if error else None
+    if task_status == "incomplete" and termination_reason != "FINISHED":
+        reason_code = termination_reason
+    elif task_status == "incomplete":
+        queries = [observation for tool, observation in context.observations if tool == "query_slots"]
+        if queries and queries[-1]["ok"] and not queries[-1]["data"]["available_slots"]:
+            reason_code = "NO_AVAILABLE_SLOT"
+        reason_code = reason_code or "INSUFFICIENT_EXECUTION_EVIDENCE"
     return {
         "material_id": material, "task_status": task_status, "review_status": status,
+        "reason_code": reason_code,
         "risks": review.get("findings", []),
         "original_requirement": item.requirement.model_dump(mode="json") if item.requirement else None,
         "suggested_at": proposed,
@@ -120,10 +131,29 @@ def write_run(directory, request, result, events, messages, repo, model):
             } if next_event else {"tool": "termination"}})
     write("trace-summary.json", summary)
     write("model-messages.json", messages)
-    write("readback.json", repo.readback() if repo else {"unavailable": True})
     try:
-        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parents[2],
+        readback = repo.readback() if repo else {"unavailable": True}
+    except sqlite3.Error:
+        readback = {"unavailable": True, "error_code": "READBACK_UNAVAILABLE",
+                    "message": "导出读回证据失败；输出保留工具已核实的结果，需要另行核实数据库。"}
+    write("readback.json", readback)
+    source_root = Path(__file__).parents[2]
+    source_files = [
+        *sorted((source_root / "src").rglob("*.py")),
+        *sorted((source_root / "data").glob("*.json")),
+        *[source_root / filename for filename in ("pyproject.toml", "requirements.txt", "requirements-dev.txt")],
+    ]
+    source_hashes = {path.relative_to(source_root).as_posix(): hashlib.sha256(path.read_bytes()).hexdigest()
+                     for path in source_files if path.is_file()}
+    tree_hash = hashlib.sha256(json.dumps(source_hashes, sort_keys=True).encode("utf-8")).hexdigest()
+    source_dirty = None
+    try:
+        commit = subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=source_root,
                                          text=True, stderr=subprocess.DEVNULL).strip()
+        source_dirty = bool(subprocess.check_output(
+            ["git", "status", "--porcelain", "--", "src", "data", "pyproject.toml",
+             "requirements.txt", "requirements-dev.txt"], cwd=source_root, text=True,
+            stderr=subprocess.DEVNULL).strip())
     except (OSError, subprocess.CalledProcessError):
         commit = None
     write("manifest.json", {
@@ -133,7 +163,11 @@ def write_run(directory, request, result, events, messages, repo, model):
         "python": platform.python_version(), "sqlite": sqlite3.sqlite_version,
         "synthetic_clock": repo.manifest["synthetic_clock"] if repo else None,
         "fixture": repo.manifest if repo else None, "source_commit": commit,
-        "exit_code": exit_code(result), "command": result.get("command"),
+        "source_dirty": source_dirty, "source_tree_sha256": tree_hash,
+        "source_file_sha256": source_hashes,
+        "exit_code": exit_code(result), "command": (
+            ["python", "-m", "scheduling_agent", *sys.argv[1:]]
+            if Path(sys.argv[0]).name == "__main__.py" else ["python", "<library invocation>"]),
         "sha256": {path.name: hashlib.sha256(path.read_bytes()).hexdigest()
                    for path in directory.iterdir() if path.is_file()},
     })

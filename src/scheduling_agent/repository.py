@@ -323,10 +323,14 @@ class Repository:
                 raise DomainError("SAVE_OUTCOME_UNKNOWN", "测试注入：已提交但响应丢失，需查询核实。", retryable=True)
             return {**self.read_draft(req.request_id, material_id), "save_status": "saved", "is_current": True}
         except sqlite3.IntegrityError as exc:
+            if committed:
+                raise DomainError("SAVE_OUTCOME_UNKNOWN", "草稿已提交但读回未成功，需查询核实。", retryable=True) from exc
             self.connection.rollback()
             code = "MATERIAL_ALREADY_RESERVED" if "drafts.channel" in str(exc) else "SLOT_CONFLICT"
             raise DomainError(code, "唯一约束拒绝重复素材或时段占位。") from None
         except sqlite3.OperationalError as exc:
+            if committed:
+                raise DomainError("SAVE_OUTCOME_UNKNOWN", "草稿已提交但读回未成功，需查询核实。", retryable=True) from exc
             if self.connection.in_transaction:
                 self.connection.rollback()
             # Extended error codes retain the base SQLite result in the low byte.
@@ -334,7 +338,11 @@ class Repository:
             if base_code in (sqlite3.SQLITE_BUSY, sqlite3.SQLITE_LOCKED):
                 raise DomainError("DB_BUSY", "数据库正被占用，请稍后核实或重试。", retryable=True) from exc
             raise DomainError("SAVE_FAILED", "数据库保存操作失败：" + str(exc), retryable=False) from exc
-        except Exception:
+        except Exception as exc:
+            if committed:
+                if isinstance(exc, DomainError) and exc.code == "SAVE_OUTCOME_UNKNOWN":
+                    raise
+                raise DomainError("SAVE_OUTCOME_UNKNOWN", "草稿已提交但返回结果未核实，需查询草稿。", retryable=True) from exc
             if not committed and self.connection.in_transaction:
                 self.connection.rollback()
             raise

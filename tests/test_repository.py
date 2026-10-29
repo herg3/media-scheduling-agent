@@ -223,3 +223,38 @@ def test_real_sqlite_lock_is_retryable_busy(tmp_path):
         assert repo.counts()=={'drafts':0,'draft_slots':0}
     finally:
         blocker.rollback(); blocker.close(); repo.close()
+
+
+@pytest.mark.parametrize('failure',[sqlite3.OperationalError('readback storage failure'), RuntimeError('readback decoding failure')])
+def test_post_commit_readback_failure_reports_unknown_and_can_be_recovered(tmp_path,monkeypatch,failure):
+    from scheduling_agent.contracts import DomainError
+    repo,req,evidence=prepared(tmp_path)
+    original=repo.read_draft
+    calls=0
+    def fail_after_commit(*args):
+        nonlocal calls
+        calls+=1
+        if calls==2:
+            assert not repo.connection.in_transaction
+            raise failure
+        return original(*args)
+    monkeypatch.setattr(repo,'read_draft',fail_after_commit)
+    with pytest.raises(DomainError) as error:
+        repo.save_draft(req,'M01','2026-11-02T18:00:00+08:00',evidence=evidence)
+    assert error.value.code=='SAVE_OUTCOME_UNKNOWN'
+    assert error.value.retryable is True
+    assert repo.counts()=={'drafts':1,'draft_slots':1}
+    assert repo.read_draft('R1','M01')['reservation_status']=='reserved'
+    repo.close()
+
+
+def test_independent_readback_failure_does_not_remove_committed_state(tmp_path,monkeypatch):
+    repo,req,evidence=prepared(tmp_path)
+    saved=repo.save_draft(req,'M01','2026-11-02T18:00:00+08:00',evidence=evidence)
+    def fail(_): raise sqlite3.OperationalError('readback unavailable')
+    with monkeypatch.context() as patch:
+        patch.setattr(repo,'_draft',fail)
+        with pytest.raises(sqlite3.OperationalError): repo.readback()
+    assert repo.read_draft('R1','M01')['draft_id']==saved['draft_id']
+    assert repo.counts()=={'drafts':1,'draft_slots':1}
+    repo.close()

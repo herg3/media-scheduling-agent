@@ -3,6 +3,7 @@ from collections import Counter
 import json
 import time
 import uuid
+from pathlib import Path
 
 from .contracts import DomainError, canonical_json, fingerprint_request
 from .evidence import item_result, write_run
@@ -14,6 +15,8 @@ from .tools import ToolContext, execute_tool, tool_schemas
 def run_agent(request, model, repo, *, confirmation=None, faults=None,
               max_model_steps=24, max_tool_calls=20, max_runtime_seconds=180,
               output_dir=None, case_id=None):
+    if output_dir and Path(output_dir).exists() and any(Path(output_dir).iterdir()):
+        raise FileExistsError("Evidence directory must be empty before execution.")
     request = request_model(request)
     repo.register_request(request)
     run_id = "RUN-" + uuid.uuid4().hex
@@ -21,6 +24,7 @@ def run_agent(request, model, repo, *, confirmation=None, faults=None,
     usage = {"model_steps_used": 0, "tool_calls_used": 0}
     backend = model.backend
     events, message_groups, results = [], [], []
+    unsupported_finish = False
     termination = "FINISHED"
     def emit(event_type, **data):
         events.append({"schema_version": 1, "run_id": run_id, "case_id": case_id,
@@ -41,6 +45,7 @@ def run_agent(request, model, repo, *, confirmation=None, faults=None,
         messages = [{"role": "system", "content": SYSTEM_PROMPT},
                     {"role": "user", "content": canonical_json(payload)}]
         questions, invalid = [], 0
+        finished = False
         attempts = Counter()
         while termination == "FINISHED":
             remaining = max_runtime_seconds - (time.monotonic() - started)
@@ -74,7 +79,11 @@ def run_agent(request, model, repo, *, confirmation=None, faults=None,
             messages.append(assistant)
             if action.tool == "finish":
                 args = action.arguments
-                if set(args) != {"decision_summary", "suggested_questions"} or not isinstance(args["suggested_questions"], list):
+                if (set(args) != {"decision_summary", "suggested_questions"}
+                        or not isinstance(args["decision_summary"], str)
+                        or not 1 <= len(args["decision_summary"]) <= 300
+                        or not isinstance(args["suggested_questions"], list)
+                        or not all(isinstance(question, str) for question in args["suggested_questions"])):
                     invalid += 1
                     observation = {"ok": False, "error": {"code": "INVALID_MODEL_ACTION",
                                    "message": "finish参数不合法。"}, "data": {}}
@@ -86,6 +95,7 @@ def run_agent(request, model, repo, *, confirmation=None, faults=None,
                 questions = [question for question in args["suggested_questions"] if isinstance(question, str)][:5]
                 messages.append({"role": "tool", "name": "finish", "tool_call_id": action.call_id,
                                  "content": '{"ok":true,"data":{"finished":true}}'})
+                finished = True
                 break
             if usage["tool_calls_used"] >= max_tool_calls:
                 termination = "TOOL_CALL_LIMIT"
@@ -111,6 +121,7 @@ def run_agent(request, model, repo, *, confirmation=None, faults=None,
             if time.monotonic() - started >= max_runtime_seconds:
                 termination = "DEADLINE_EXCEEDED"
         results.append(item_result(context, termination, questions))
+        unsupported_finish |= finished and results[-1]["task_status"] == "incomplete"
         message_groups.append({"material_id": item.material_id, "messages": messages})
     completed = sum(item["task_status"] == "completed" for item in results)
     run_status = "completed" if completed == len(results) else "partial" if completed else "incomplete"
@@ -121,6 +132,8 @@ def run_agent(request, model, repo, *, confirmation=None, faults=None,
               "trace_path": None, "warnings": ["仅合成资料审核与本地排期草稿；尚未发布。"]}
     if backend != "live":
         result["warnings"].append("离线Mock/Fake只证明流程，不证明真实模型决策。")
+    if unsupported_finish:
+        result["warnings"].append("OUTPUT_GROUNDED_BY_EVIDENCE")
     emit("run_finished", termination_reason=termination, run_status=run_status)
     if output_dir:
         write_run(output_dir, request.model_dump(mode="json"), result, events, message_groups, repo, model)

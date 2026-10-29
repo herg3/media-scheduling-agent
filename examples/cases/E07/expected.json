@@ -1,0 +1,23 @@
+{
+  "task_status": [
+    "awaiting_confirmation"
+  ],
+  "drafts": 1,
+  "draft_slots": 0,
+  "same_draft_id": true,
+  "suggested_at": [
+    "2026-11-02T20:00:00+08:00"
+  ],
+  "revision": [
+    2
+  ],
+  "original_requested_at": [
+    "2026-11-02T18:00:00+08:00"
+  ],
+  "confirmation_status": [
+    "pending"
+  ],
+  "effective_at": [
+    null
+  ]
+}

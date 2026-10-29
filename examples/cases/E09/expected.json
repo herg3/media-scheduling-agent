@@ -1,0 +1,23 @@
+{
+  "task_status": [
+    "failed"
+  ],
+  "drafts": 1,
+  "draft_slots": 0,
+  "same_draft_id": true,
+  "reservation_status": [
+    "pending"
+  ],
+  "confirmation_status": [
+    "pending"
+  ],
+  "revision": [
+    1
+  ],
+  "effective_at": [
+    null
+  ],
+  "save_status": [
+    "failed"
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "task_status": [
+    "completed"
+  ],
+  "drafts": 1,
+  "draft_slots": 1,
+  "same_draft_id": true,
+  "reservation_status": [
+    "reserved"
+  ],
+  "confirmation_status": [
+    "confirmed"
+  ],
+  "revision": [
+    2
+  ],
+  "effective_at": [
+    "2026-11-02T19:00:00+08:00"
+  ],
+  "original_requested_at": [
+    "2026-11-02T18:00:00+08:00"
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "task_status": [
+    "blocked"
+  ],
+  "drafts": 0,
+  "draft_slots": 0,
+  "review_status": [
+    "blocked"
+  ],
+  "reservation_status": [
+    "none"
+  ],
+  "risk_ids": [
+    [
+      "R-FORBIDDEN"
+    ]
+  ]
+}

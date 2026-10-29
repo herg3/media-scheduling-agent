@@ -60,10 +60,21 @@ class ToolContext:
     suggested_at: str | None = None
     last_save: dict | None = None
     last_error: dict | None = None
+    save_error: dict | None = None
 
 
 def execute_tool(call, context: ToolContext):
     name, args = call.tool, call.arguments
+    # A failed refresh cannot leave old observations authorizing another write.
+    if name == "read_material":
+        context.evidence["read"] = False
+        context.evidence["review"] = None
+    elif name == "check_rules":
+        context.evidence["review"] = None
+    elif name == "query_slots":
+        context.evidence["queried_slots"] = []
+    elif name == "save_schedule_draft" and context.last_save:
+        context.last_save = {**context.last_save, "is_current": False}
     try:
         if name not in TOOL_FIELDS or name == "finish":
             raise DomainError("INVALID_MODEL_ACTION", "工具不在白名单内。")
@@ -112,9 +123,10 @@ def execute_tool(call, context: ToolContext):
             data = repo.read_draft(request_model(context.request).request_id, material)
             if not data:
                 raise DomainError("DRAFT_NOT_FOUND", "本请求尚无该素材草稿。")
-            if context.last_error and context.last_error["code"] == "SAVE_OUTCOME_UNKNOWN":
+            if context.save_error and context.save_error["code"] == "SAVE_OUTCOME_UNKNOWN":
                 context.last_save = {**data, "save_status": "already_exists", "is_current": True}
                 context.last_error = None
+                context.save_error = None
         else:
             context.suggested_at = display_time(args["proposed_at"])
             if args["expected_revision"] is not None and (type(args["expected_revision"]) is not int or args["expected_revision"] < 1):
@@ -124,6 +136,7 @@ def execute_tool(call, context: ToolContext):
                                   confirmation=context.confirmation, fault=context.faults.get(name))
             context.last_save = data
             context.last_error = None
+            context.save_error = None
         observation = {"tool_call_id": call.call_id, "ok": True, "data": data, "error": None,
                        "evidence": {"observed_at": display_time(repo.now),
                                     "material_version": data.get("material_version"),
@@ -132,6 +145,8 @@ def execute_tool(call, context: ToolContext):
     except (DomainError, ValueError, TypeError) as exc:
         error = exc if isinstance(exc, DomainError) else DomainError("INVALID_MODEL_ACTION", "工具参数格式错误。")
         context.last_error = {"code": error.code, "message": error.message, "retryable": error.retryable}
+        if name == "save_schedule_draft":
+            context.save_error = context.last_error
         observation = {"tool_call_id": call.call_id, "ok": False, "data": {}, "error": context.last_error,
                        "evidence": {"observed_at": display_time(context.repo.now)}}
     context.observations.append((name, observation))

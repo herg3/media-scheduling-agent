@@ -1,0 +1,5 @@
+{
+  "faults": {
+    "save_schedule_draft": "before_commit"
+  }
+}
