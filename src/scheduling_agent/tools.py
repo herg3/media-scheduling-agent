@@ -14,7 +14,7 @@ PROPERTIES = {
     "search_start": {"type": "string", "description": "完整+08:00整点起始时间"},
     "search_end": {"type": "string", "description": "不包含的整点终点，范围不超过24小时"},
     "proposed_at": {"type": "string"},
-    "expected_revision": {"type": ["integer", "null"]},
+    "expected_revision": {"type": ["integer", "null"], "description": "传get_draft返回的当前revision原值，不要加1；当前是1就传1，保存成功后程序自动升到2。没有草稿时传null。"},
     "suggested_questions": {"type": "array", "items": {"type": "string"}},
 }
 TOOL_FIELDS = {
