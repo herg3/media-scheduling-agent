@@ -1,0 +1,1346 @@
+{
+  "backend": "live",
+  "total": 12,
+  "passed": 12,
+  "failed": 0,
+  "results": [
+    {
+      "case_id": "E04",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "awaiting_confirmation"
+          ],
+          "actual": [
+            "awaiting_confirmation"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "review_status",
+          "expected": [
+            "pass"
+          ],
+          "actual": [
+            "pass"
+          ],
+          "passed": true
+        },
+        {
+          "field": "reservation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "original_requested_at",
+          "expected": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "suggested_at",
+          "expected": [
+            "2026-11-02T19:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T19:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "revision",
+          "expected": [
+            1
+          ],
+          "actual": [
+            1
+          ],
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "awaiting_confirmation"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": false,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ]
+      },
+      "runs": [
+        "RUN-a1ba9cf44489493a969a8c645f3df433"
+      ]
+    },
+    {
+      "case_id": "E04",
+      "repeat": 2,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "awaiting_confirmation"
+          ],
+          "actual": [
+            "awaiting_confirmation"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "review_status",
+          "expected": [
+            "pass"
+          ],
+          "actual": [
+            "pass"
+          ],
+          "passed": true
+        },
+        {
+          "field": "reservation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "original_requested_at",
+          "expected": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "suggested_at",
+          "expected": [
+            "2026-11-02T19:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T19:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "revision",
+          "expected": [
+            1
+          ],
+          "actual": [
+            1
+          ],
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "awaiting_confirmation"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": false,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ]
+      },
+      "runs": [
+        "RUN-96c0d294f4b147be871109364fe270a7"
+      ]
+    },
+    {
+      "case_id": "E04",
+      "repeat": 3,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "awaiting_confirmation"
+          ],
+          "actual": [
+            "awaiting_confirmation"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "review_status",
+          "expected": [
+            "pass"
+          ],
+          "actual": [
+            "pass"
+          ],
+          "passed": true
+        },
+        {
+          "field": "reservation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "original_requested_at",
+          "expected": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "suggested_at",
+          "expected": [
+            "2026-11-02T19:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T19:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "revision",
+          "expected": [
+            1
+          ],
+          "actual": [
+            1
+          ],
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "awaiting_confirmation"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": false,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ]
+      },
+      "runs": [
+        "RUN-7af53a33108d4b6ea0d257a85603b8bc"
+      ]
+    },
+    {
+      "case_id": "E07",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "awaiting_confirmation"
+          ],
+          "actual": [
+            "awaiting_confirmation"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "same_draft_id",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "revision",
+          "expected": [
+            2
+          ],
+          "actual": [
+            2
+          ],
+          "passed": true
+        },
+        {
+          "field": "original_requested_at",
+          "expected": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "suggestion_changed",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "awaiting_confirmation"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T20:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          2
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": true,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ],
+        "same_draft_id": true
+      },
+      "runs": [
+        "RUN-f46b19c83d524ac484af221cf2aa0d8e",
+        "RUN-a9570580f46b477aa74b8fee8db5acf9"
+      ]
+    },
+    {
+      "case_id": "E07",
+      "repeat": 2,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "awaiting_confirmation"
+          ],
+          "actual": [
+            "awaiting_confirmation"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "same_draft_id",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "revision",
+          "expected": [
+            2
+          ],
+          "actual": [
+            2
+          ],
+          "passed": true
+        },
+        {
+          "field": "original_requested_at",
+          "expected": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "suggestion_changed",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "awaiting_confirmation"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T20:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          2
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": true,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ],
+        "same_draft_id": true
+      },
+      "runs": [
+        "RUN-6da588b34962407eb93291adb07c4aea",
+        "RUN-ed16e8669bd8499dbd15d73bd98fa43e"
+      ]
+    },
+    {
+      "case_id": "E07",
+      "repeat": 3,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "awaiting_confirmation"
+          ],
+          "actual": [
+            "awaiting_confirmation"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "same_draft_id",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "revision",
+          "expected": [
+            2
+          ],
+          "actual": [
+            2
+          ],
+          "passed": true
+        },
+        {
+          "field": "original_requested_at",
+          "expected": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "actual": [
+            "2026-11-02T18:00:00+08:00"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "suggestion_changed",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "awaiting_confirmation"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T20:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          2
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": true,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ],
+        "same_draft_id": true
+      },
+      "runs": [
+        "RUN-8c926ff57f0e4bea96cca6127a8d9b90",
+        "RUN-71e3bb4b7c724f5ba28a833719675eac"
+      ]
+    },
+    {
+      "case_id": "E09",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "same_draft_id",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "reservation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "not_completed",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "failed"
+        ],
+        "save_status": [
+          "failed"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T20:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": true,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ],
+        "same_draft_id": true
+      },
+      "runs": [
+        "RUN-8017295b843840c1a9c60ea9920a6393",
+        "RUN-96e5922b2d024abfa1b5308dee845163"
+      ]
+    },
+    {
+      "case_id": "E09",
+      "repeat": 2,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "same_draft_id",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "reservation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "not_completed",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "failed"
+        ],
+        "save_status": [
+          "failed"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T20:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": true,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ],
+        "same_draft_id": true
+      },
+      "runs": [
+        "RUN-daf024da41d34a11bdac26a81df7fd84",
+        "RUN-1ff51c083dd543c2bb202757855aa23d"
+      ]
+    },
+    {
+      "case_id": "E09",
+      "repeat": 3,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "same_draft_id",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        },
+        {
+          "field": "reservation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "confirmation_status",
+          "expected": [
+            "pending"
+          ],
+          "actual": [
+            "pending"
+          ],
+          "passed": true
+        },
+        {
+          "field": "effective_at",
+          "expected": [
+            null
+          ],
+          "actual": [
+            null
+          ],
+          "passed": true
+        },
+        {
+          "field": "not_completed",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "failed"
+        ],
+        "save_status": [
+          "failed"
+        ],
+        "drafts": 1,
+        "draft_slots": 0,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "pending"
+        ],
+        "effective_at": [
+          null
+        ],
+        "suggested_at": [
+          "2026-11-02T20:00:00+08:00"
+        ],
+        "reservation_status": [
+          "pending"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T19:00:00+08:00"
+        ],
+        "suggestion_changed": true,
+        "not_completed": true,
+        "risk_ids": [
+          []
+        ],
+        "same_draft_id": true
+      },
+      "runs": [
+        "RUN-b68c68b976b44461b1b5e71db65dc9cd",
+        "RUN-a222e2bac5664600bc850b8867d80c7c"
+      ]
+    },
+    {
+      "case_id": "E13",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "completed"
+          ],
+          "actual": [
+            "completed"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "completed"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 1,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "not_required"
+        ],
+        "effective_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "suggested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "reservation_status": [
+          "reserved"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "suggestion_changed": false,
+        "not_completed": false,
+        "risk_ids": [
+          []
+        ]
+      },
+      "runs": [
+        "RUN-ea9cea779f1d408fb66cd84e11d8791d"
+      ]
+    },
+    {
+      "case_id": "E13",
+      "repeat": 2,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "completed"
+          ],
+          "actual": [
+            "completed"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "completed"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 1,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "not_required"
+        ],
+        "effective_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "suggested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "reservation_status": [
+          "reserved"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "suggestion_changed": false,
+        "not_completed": false,
+        "risk_ids": [
+          []
+        ]
+      },
+      "runs": [
+        "RUN-46f4cb08fbc149cd9167b92c159a0a0f"
+      ]
+    },
+    {
+      "case_id": "E13",
+      "repeat": 3,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "completed"
+          ],
+          "actual": [
+            "completed"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "completed"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 1,
+        "review_status": [
+          "pass"
+        ],
+        "confirmation_status": [
+          "not_required"
+        ],
+        "effective_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "suggested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "reservation_status": [
+          "reserved"
+        ],
+        "revision": [
+          1
+        ],
+        "original_requested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "first_suggested_at": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "suggestion_changed": false,
+        "not_completed": false,
+        "risk_ids": [
+          []
+        ]
+      },
+      "runs": [
+        "RUN-671cba8db6d64041ae090cd1a9978074"
+      ]
+    }
+  ]
+}

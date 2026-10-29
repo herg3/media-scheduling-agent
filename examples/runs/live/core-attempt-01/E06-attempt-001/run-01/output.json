@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-3c681cb15005461bbd812feefce6f386",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "incomplete",
+      "review_status": "pass",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T18:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "not_required",
+      "pending_questions": [
+        "请检查调度服务的持久化模块是否异常？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": "DRAFT_NOT_FOUND",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_70b40a0bebe74440867730",
+        "call_91c9b3772a3c4f14babfec",
+        "call_6ac28d9be7bf4cf5b0a367",
+        "call_8b05e60b86404a1d9aa986",
+        "call_4c1088b92f3b41b3841130",
+        "call_cf760f0712e0455d883c81",
+        "call_78585e6a3eb0415c8d1cb1"
+      ],
+      "message": "任务未完成；保留已知实际状态，请查看原因与Trace。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 8,
+    "tool_calls_used": 7,
+    "elapsed_ms": 22220,
+    "provider_usage": {
+      "total_tokens": 20002,
+      "completion_tokens": 450,
+      "prompt_tokens": 19552
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

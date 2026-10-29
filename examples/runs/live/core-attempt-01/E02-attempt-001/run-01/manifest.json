@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-a2332dbd99124d339ceb5eb3e75cec81",
+  "backend": "live",
+  "provider": "dashscope",
+  "model_id": "qwen-plus",
+  "recorded_at_utc": "2026-10-29T07:39:41.654197+00:00",
+  "python": "3.13.14",
+  "sqlite": "3.50.4",
+  "synthetic_clock": "2026-11-01T09:00:00+08:00",
+  "fixture": {
+    "business_date": "2026-11-02",
+    "synthetic": true,
+    "synthetic_clock": "2026-11-01T09:00:00+08:00",
+    "version": "synthetic-v1"
+  },
+  "source_commit": "7b0a6c829a42c638ef82fb47984b8d531860ef8d",
+  "exit_code": 2,
+  "command": null,
+  "sha256": {
+    "input.json": "a847f8ff2becc8a0724d50dfae3c694e971218293bfc40312bd4d63dc4efdfa8",
+    "model-messages.json": "e949fc552e7715daad501afbd18d45f90dce7c837e8c53c1de22bbf1fc41e12b",
+    "output.json": "f179070eb8ff32b97cf17399acc8dc71858a815aae4b24e45ebad8463cd15c86",
+    "readback.json": "eebfa8940b301b0194fe3c3aa63a073d3df03f7ada25e958514c9758349fb866",
+    "trace-summary.json": "aee3c4170fc819605e201b0cbf9b333e381c652a6793a28260ac232388ef4e68",
+    "trace.jsonl": "68608da7363c6cf5c24d13a6dbd0314c0884509468bea210aafec7339387942e"
+  }
+}

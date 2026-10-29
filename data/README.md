@@ -1,10 +1,10 @@
 # 合成资料设计
 
-阶段：设计。本目录目前不包含可装载的业务数据；以下是开发时的 fixture 规格。
+阶段：已提供可装载的合成 JSON；通过 init-db 显式装载，已有数据库拒绝覆盖。
 
 所有素材、账号、规则和已有排期均人工合成，不使用真实视频、真实用户和真实授权证明。不把试卷页面或完整题面放入数据。
 
-## 文件规划
+## 实际文件
 
 | 文件 | 内容 |
 |---|---|
@@ -23,17 +23,16 @@
 | M03 | claims 包含合成禁用的“保证效果”表述 | 无法解除该风险 | 规则阻断 |
 | M04 | 主资料缺授权状态 | 有有效的合成授权记录 | 模型补查后继续 |
 | M05 | 需要人工判断的合成宣传措辞 | 无人工复核结论 | needs_review，不接受时间确认覆盖 |
-| M06 | 主资料和补充资料对同一授权字段矛盾 | 冲突记录 | 请求人工核对，不擅自选一份 |
+| M06 | 主资料缺授权状态 | 两条补充分别声称 authorized 与 rejected | 请求人工核对，不擅自选一份 |
 
-最低规则：
+实际规则：
 
-- R01：必要授权字段缺失 → needs_information。
-- R02：授权明确过期 → blocked。
-- R03：命中确定禁用宣称 → blocked。
-- R04：模糊或需人工判断的风险 → needs_review。
-- R05：缺标题或时长非法 → needs_information。
+- R-REQUIRED：title、duration_seconds 或 copyright_status 缺失（或时长非法）→ needs_information；severity=MISSING。
+- R-AUTH：授权拒绝、非 authorized 状态或明确过期 → blocked；severity=BLOCK。
+- R-FORBIDDEN：claims 命中 guaranteed cure 或 100% effective → blocked。
+- R-REVIEW：claims 命中 preliminary benefit 或 results may vary → needs_review；severity=REVIEW。
 
-规则含 rule_id、version、severity、适用字段、匹配条件、解释和来源说明。匹配函数由程序执行；不让模型通过自报“通过”跳过规则。
+规则实际包含 rule_id、kind、fields 或 pattern、severity、message、enabled；没有独立 version 或来源字段。版本由数据库规则集合摘要计算。匹配函数由程序执行；不让模型通过自报“通过”跳过规则。
 
 ## 固定时间与隔离
 
@@ -42,3 +41,9 @@
 每个独立用例使用临时数据库；重复、修订、确认、并发用例有意共享同一个数据库。初始化只执行一次，重复运行不得清库伪造幂等。
 
 替换占用时段的测试使用测试装配层更新 slots；更新前后快照及变更命令存入用例证据。真实模型只接收工具观察，不接收“应该选哪个时间”的预期答案。
+
+## JSON 装载格式
+
+materials.json 是 {material_id, metadata, source_id} 列表；supplements.json 是 {supplement_id, material_id, fields, source_id} 列表；rules.json 是上述定义列表；schedules.json 默认空列表，场景占用通过独立评估数据库注入，记录格式为 {channel, account_id, slot_start, owner_id}。fixture-manifest.json 保存 version=synthetic-v1、synthetic=true、synthetic_clock 和 business_date。
+
+当前初始化仅将 manifest JSON 存入 fixture_meta，并未存完整资料内容摘要。素材读取版本由主资料及已采用补充内容计算；规则版本由定义集合计算。运行 manifest 记录 data/*.json 与源码的 SHA-256，供证据追溯。

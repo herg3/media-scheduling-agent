@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-5bee6a0d83c644b49327e3f59b5d6911",
+  "backend": "mock",
+  "run_status": "incomplete",
+  "termination_reason": "MODEL_STEP_LIMIT",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "incomplete",
+      "review_status": "unknown",
+      "warnings": [],
+      "reason_code": "MODEL_STEP_LIMIT",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": "DRAFT_NOT_FOUND",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call-113361ff7c8b",
+        "call-3e51618bdbdb"
+      ],
+      "message": "任务未完成；保留已知实际状态，请查看原因与Trace。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 2,
+    "tool_calls_used": 2,
+    "elapsed_ms": 6,
+    "provider_usage": {}
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。",
+    "离线Mock/Fake只证明流程，不证明真实模型决策。"
+  ]
+}

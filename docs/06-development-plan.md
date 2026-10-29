@@ -1,12 +1,12 @@
 # 素材审核与发布排期 Agent 开发计划
 
-> For agentic workers: 后续实施使用 executing-plans，按任务逐项实现和检查。本轮只交付文档，不启动实现；没有授权分派子 Agent。
+> 状态：已进入实施与证据复核阶段。此文保留原任务分解，并按当前代码与可定位测试同步。未勾选项仍需独立证据，不由代码存在推定完成。
 
 **Goal:** 完成真实模型驱动、边界清楚、可运行和可验证的素材审核与排期草稿 CLI。
 
 **Architecture:** 原生单 Agent 循环协调六项工具；确定性策略检查审核、确认和证据；SQLite 事务保证草稿与占位一致。独立 Mock 适配器支持无密钥运行，真实模型路径单独评估。
 
-**Tech Stack:** Python 3.12、Pydantic 2 系列、httpx、tzdata、SQLite、pytest；依赖精确版本在目标环境中锁定。
+**Tech Stack:** Python >=3.12（实际 3.13.14）、Pydantic 2 系列、httpx、tzdata、SQLite、pytest；依赖精确版本在目标环境中锁定。
 
 ## 1. 全局约束
 
@@ -57,68 +57,70 @@ src/scheduling_agent/
   repository.py
   policy.py
   evidence.py
-  fixtures.py
+  evaluation.py
   cli.py
 tests/
   conftest.py
   test_contracts.py
   test_rules.py
   test_repository.py
-  test_confirmation.py
+  test_model.py
   test_agent.py
   test_guardrails.py
   test_cli.py
-  test_live_eval.py
+  test_evaluation.py
 data/
 examples/
 docs/
 ~~~
 
-work/ 放虚拟运行文件和本地数据库，默认忽略；examples/ 只提交经脱敏且可复核的选定证据。根目录代码、测试、依赖文件本轮尚未创建。
+work/ 放虚拟运行文件和本地数据库，默认忽略；examples/ 只提交经脱敏且可复核的选定证据。代码、测试与依赖文件现已存在。上方是原目标目录：实际没有 fixtures.py、test_confirmation.py、test_live_eval.py；装载由 Repository、评估由 evaluation.py 完成，确认测试分布于 test_repository.py / test_cli.py / test_guardrails.py。
 
 ## 4. 公共接口边界
 
-以下为待实现签名，字段对应契约，不是现成代码：
+以下为当前实际接口（完整可选参数见源码）：
 
 ~~~python
-# contracts.py: Pydantic 模型
-# SchedulingRequest, SchedulingItem, PublishRequirement, RunResult,
-# ItemResult, ToolCall, ToolObservation, ModelAction, ConfirmationContext
+# contracts.py
+# Pydantic: SchedulingRequest, SchedulingItem, ExactRequirement, WindowRequirement
+# dataclass: ModelAction; dict alias: ToolObservation; exception: DomainError
+fingerprint_request(request: SchedulingRequest) -> str
 
 # policy.py
-def fingerprint_request(request: SchedulingRequest) -> str: ...
-def evaluate_rules(material: dict, rules: list[dict], now: datetime) -> dict: ...
-def is_originally_authorized(requirement: PublishRequirement, proposed_at: datetime) -> bool: ...
+evaluate_rules(material: dict, rules: list[dict], now: datetime) -> dict
+is_originally_authorized(requirement, proposed_at: datetime) -> bool
 
 # repository.py
-class Repository:
-    def register_request(self, request: SchedulingRequest) -> None: ...
-    def read_draft(self, request_id: str, material_id: str) -> dict | None: ...
-    def save_draft(self, command: dict, context: ToolContext) -> ToolObservation: ...
+Repository.register_request(request)
+Repository.read_draft(request_id, material_id)
+Repository.save_draft(request, material_id, proposed_at, expected_revision=None,
+                      *, evidence=None, confirmation=None, fault=None)
 
-# tools.py: ToolContext 为 dataclass，含契约中可信上下文，不能从模型参数创建
-def execute_tool(call: ToolCall, context: ToolContext) -> ToolObservation: ...
+# tools.py
+ToolContext(repo, request, material_id, confirmation=None, faults={}, ...)
+execute_tool(call, context)
 
-# model.py
-class ModelAdapter(Protocol):
-    def next_action(self, messages: list[dict], tools: list[dict], timeout_seconds: float) -> ModelAction: ...
+# model.py: LiveModel / MockModel 共用鸭子类型接口，没有独立 Protocol 类
+next_action(messages, tools, timeout_seconds) -> ModelAction
 
-# agent.py
-def run_agent(request: SchedulingRequest, model: ModelAdapter, context: ToolContext) -> RunResult: ...
+# agent.py: 返回 dict
+run_agent(request, model, repo, *, confirmation=None, faults=None,
+          max_model_steps=24, max_tool_calls=20, max_runtime_seconds=180,
+          output_dir=None, case_id=None)
 ~~~
 
-类型均由对应文件定义和导出，禁止测试和 CLI 各自维护一套同名字段。实现中可调整签名，但必须同步契约、调用方与测试，记录原因。
+输出 JSON 由 evidence.py 组装，尚无完整 RunResult / ItemResult Pydantic 模型。公共工具参数与可信上下文分离；save_error 保留保存失败，reason_code 明确单项未完成原因。
 
 ## 5. 任务一：环境与请求契约
 
 文件：pyproject.toml、requirements.txt、requirements-dev.txt、.gitignore、src/scheduling_agent/contracts.py、policy.py、tests/test_contracts.py、data/ 下合成 JSON。
 
-- [ ] 探查可用 Python 3.12；若缺失先配置独立解释器，不改系统默认 Python。
+- [x] 已配置满足 >=3.12 的独立 Python 3.13.14 虚拟环境，不改系统默认 Python。
 - [ ] 创建虚拟环境，安装依赖，在干净环境验证并写入确切版本。
-- [ ] 先写输入和指纹测试：EXACT/WINDOW、缺要求、重复素材、未知字段、半点、错误时区、同键变更。
-- [ ] 运行测试确认针对未实现行为失败；实现 Schema、规范化和指纹。
-- [ ] 按 data/README.md 生成 M01～M06、规则和排期；禁止模型接收测试预期。
-- [ ] 运行本任务测试通过后记录命令、结果和差异。
+- [x] 先写输入和指纹测试：EXACT/WINDOW、缺要求、重复素材、未知字段、半点、错误时区、同键变更。
+- [x] 运行测试确认针对未实现行为失败；实现 Schema、规范化和指纹。
+- [x] 按 data/README.md 生成 M01～M06、规则和排期；禁止模型接收测试预期。
+- [x] 运行本任务测试通过后记录命令、结果和差异。
 
 核心测试示意，使用项目真实入口：
 
@@ -135,17 +137,17 @@ def test_changed_requirement_changes_fingerprint(normal_request):
     assert fingerprint_request(first) != fingerprint_request(changed)
 ~~~
 
-normal_request 在 tests/conftest.py 由 E01 输入建立；字段必须与契约一致。未来验证命令：python -m pytest tests/test_contracts.py -q。交付判断：合法请求可解析，非法输入可定位，指纹只基于规范化业务输入。
+上述示例表达目标；实际 test_contracts.py 使用本地 request() 构造输入，未提供这些命名 fixture。E01 输入在 examples/cases/E01/input.json；字段必须与契约一致。未来验证命令：python -m pytest tests/test_contracts.py -q。交付判断：合法请求可解析，非法输入可定位，指纹只基于规范化业务输入。
 
 ## 6. 任务二：规则、时段与确认策略
 
-文件：policy.py、contracts.py、tests/test_rules.py、tests/test_confirmation.py。
+文件：policy.py、contracts.py、tests/test_rules.py、tests/test_repository.py。
 
-- [ ] 先测试授权缺失、补查成功、确定风险、软风险、来源冲突及 BLOCK 优先。
-- [ ] 实现共享资料合并和审核函数，工具与保存门禁共用。
-- [ ] 测试 EXACT、窗口边界、过去时间、非整点，禁止自动改时间。
-- [ ] 测试确认绑定 revision、proposal_hash 和具体时间；仅时间确认不能解除风险。
-- [ ] 实现策略并运行相关测试，记录未通过项。
+- [x] 先测试授权缺失、补查成功、确定风险、软风险、来源冲突及 BLOCK 优先。
+- [x] 实现共享资料合并和审核函数，工具与保存门禁共用。
+- [x] 测试 EXACT、窗口边界、过去时间、非整点，禁止自动改时间。
+- [x] 测试确认绑定 revision、proposal_hash 和具体时间；仅时间确认不能解除风险。
+- [x] 实现策略并运行相关测试，记录未通过项。
 
 ~~~python
 def test_window_end_is_not_authorized(window_requirement):
@@ -157,21 +159,21 @@ def test_window_end_is_not_authorized(window_requirement):
 def test_hard_risk_is_blocked(risky_material, rules, fixed_now):
     result = evaluate_rules(risky_material, rules, fixed_now)
     assert result["review_status"] == "blocked"
-    assert any(item["rule_id"] == "R03" for item in result["findings"])
+    assert any(item["rule_id"] == "R-FORBIDDEN" for item in result["findings"])
 ~~~
 
-fixtures 在 conftest.py 从合成资料加载，fixed_now 为 2026-11-01 09:00 +08:00。命令：python -m pytest tests/test_rules.py tests/test_confirmation.py -q。交付判断：风险、时间与确认权限有确定性断言。
+实际规则测试在 test_rules.py 直接读取合成资料并显式传入时钟；上方代码是示意而非现成 fixture。固定时钟为 2026-11-01 09:00 +08:00。命令：python -m pytest tests/test_rules.py tests/test_repository.py -q。交付判断：风险、时间与确认权限有确定性断言。
 
 ## 7. 任务三：持久化与幂等保存
 
-文件：repository.py、fixtures.py、tests/test_repository.py。
+文件：repository.py、evaluation.py、tests/test_repository.py。
 
-- [ ] 建 SQLite 表与约束，开启外键；显式初始化 fixture，重跑不清库。
+- [x] 建 SQLite 表与约束，开启外键；显式初始化 fixture，重跑不清库。
 - [ ] 先写同请求重复、同键不同输入、pending修订、reserved唯一、事务失败测试。
-- [ ] 实现 register_request、read_draft、save_draft；短事务内重查资料、规则和冲突。
-- [ ] 注入提交前失败，断言草稿和占位都未写入。
+- [x] 实现 register_request、read_draft、save_draft；短事务内重查资料、规则和冲突。
+- [x] 注入提交前失败，断言草稿和占位都未写入。
 - [ ] 用两个连接制造“查询后新占用”，断言无双占位。
-- [ ] 核心完成后加提交后响应丢失和跨进程重复验证。
+- [x] 核心完成后加提交后响应丢失和跨进程重复验证。
 
 实际断言必须包括：
 
@@ -190,9 +192,9 @@ assert rolled_back_slot_count == 0
 
 文件：tools.py、agent.py、model.py、prompts.py、evidence.py、tests/test_agent.py、tests/test_guardrails.py。
 
-- [ ] 注册六项工具和 finish；Schema 严格排除 confirmed、force、published。
+- [x] 注册六项工具和 finish；Schema 严格排除 confirmed、force、published。
 - [ ] 先用 FakeModel 验证观察传递和循环停止，再实现通用执行循环。
-- [ ] 每次模型下一轮收到上一轮真实工具结果和关联调用 ID。
+- [x] 每次模型下一轮收到上一轮真实工具结果和关联调用 ID。
 - [ ] 实现 tool/model/time 三种上限、同参数最多两次、非法动作两次终止。
 - [ ] 用同一 Mock 适配器配不同工具观察，验证下一步动作不同。
 - [ ] 用不可信 FakeModel 尝试跳过审核、伪造保存、确认越权，验证输出依据事实。
@@ -211,29 +213,29 @@ recorded_messages 由 RecordingModelAdapter 捕获 next_action 的真实入参�
 
 ## 9. 任务五：真实模型接入
 
-文件：model.py、prompts.py、tests/test_live_eval.py、.env.example。
+文件：model.py、prompts.py、tests/test_model.py、.env.example。
 
 - [ ] 使用本机已有或用户自行配置的合法凭据；不从聊天收集密钥。
 - [ ] 选一个经官方文档支持并实测可用的工具调用模型；记录实际提供方、ID和参数。
 - [ ] 先验证最小“调用工具→回传结果→下一动作”，排除仅输出工具名称的假调用。
 - [ ] 接入同一业务工具，运行 E01 和 E04；保存失败试次。
 - [ ] 若失败，先检查协议、工具描述、观察是否正确传回，再改提示词；记录实际修改。
-- [ ] live 不可用则明确记录；不自动降级、不称完成真实模型要求。
+- [x] live 不可用则明确记录；不自动降级、不称完成真实模型要求。
 
 命令：python -m scheduling_agent evaluate --backend live --cases examples/cases --case-ids E01,E04 --output-dir examples/runs/live --repeats 1。此命令需在任务六 CLI 已可用后执行；若先验证适配器，直接使用显式 live 测试入口。交付判断：至少两条模型实际路径，工具观察后有可定位的下一动作。
 
 ## 10. 任务六：CLI 与确认闭环
 
-文件：cli.py、__main__.py、tests/test_cli.py、tests/test_confirmation.py。
+文件：cli.py、__main__.py、tests/test_cli.py、tests/test_repository.py。
 
-- [ ] 实现 init-db、run、confirm、show-draft、evaluate，帮助信息说明仅草稿；init-db拒绝覆盖已有数据库。
+- [x] 实现 init-db、run、confirm、show-draft、evaluate，帮助信息说明仅草稿；init-db拒绝覆盖已有数据库。
 - [ ] 按契约输出退出码，确保异常也产生可读失败结果和已完成项。
 - [ ] 运行无密钥 Mock 命令，检查 input/output/trace/readback/manifest 文件。
 - [ ] 确认 E04 的具体草稿版本；核对同 ID、reserved 状态和占位。
 - [ ] 新增占用后确认旧建议，验证不得将旧确认套给新建议。
 - [ ] 重复运行保持同一数据库，验证幂等；不靠删除数据库使测试通过。
 
-命令：python -m pytest tests/test_cli.py tests/test_confirmation.py -q。交付判断：评审可用模块命令完整复现，确认入口确实生效而非文档说明。
+命令：python -m pytest tests/test_cli.py tests/test_repository.py -q。交付判断：评审可用模块命令完整复现，确认入口确实生效而非文档说明。
 
 ## 11. 任务七：评估、修复与证据
 
@@ -265,4 +267,27 @@ recorded_messages 由 RecordingModelAdapter 捕获 next_action 的真实入参�
 
 实现时首先核对本版产品假设：整点容量、pending不占位、EXACT需具体确认、已确认草稿不自动迁移。若调整这些假设，同步需求、契约和测试，不能只改提示词。
 
-本轮交付完成条件仅为需求和开发文档可读、可追踪且无伪造结果；业务实现的完成条件另见需求与评估。
+业务实现与证据已生成，最终验收结果另见评估与提交清单。候选人独立走读、干净环境复现、GitHub 可读权限及最终提交 SHA 仍不能由本地开发完成代替。
+
+## 14. 状态说明
+
+勾选仅表示本地源码和已有测试能直接支持该条，不代表整个任务或项目通过最终验收。完整离线测试数和 live 评估结果由主评估报告记录，本文件不重复固定数值。任务八的候选人独立复核和 GitHub 交付保留未完成；文档同步本身不构成个人复现证明。
+
+当前差距：SQLite 固定最多 2 秒锁等待，没有动态绑定剩余整体预算；未实现完整输出 Pydantic schema；初始化仅存 fixture manifest JSON，资料内容哈希在运行证据中记录。
+
+## 15. 本地实施验收映射（2026-10-29）
+
+原任务清单是分阶段工作记录；以下为本轮结束时的证据映射，未逐条回填的旧复选框不表示对应代码不存在。
+
+| 任务 | 本地实际状态 | 证据 |
+|---|---|---|
+| 环境/规则/事务/循环 | 已实现 | src/；74项pytest |
+| 真实模型接入 | 已运行 | live/final-02，13/13满足严格预期 |
+| CLI/确认/幂等 | 已运行 | E05/E07/E08/E09与CLI/repository测试 |
+| 离线评估 | 已运行 | mock/final-01，13/13 |
+| 稳定性重复 | 另行实测 | stability-02为12/12，旧失败保留 |
+| 文档/干净环境 | 按最终报告核对 | 03-evaluation与submission-validation.json |
+| 候选人亲自走读/复现 | 尚未记录 | 不由AI执行代替 |
+| GitHub/评审访问 | 未执行 | 等待候选人账户与正式提交 |
+
+细粒度结果及失败原因统一见[实际评估](03-evaluation.md)，避免把旧计划中的预期当作结果。

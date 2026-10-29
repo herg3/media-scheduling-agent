@@ -1,0 +1,33 @@
+{
+  "counts": {
+    "drafts": 1,
+    "draft_slots": 1
+  },
+  "drafts": [
+    {
+      "draft_id": "D-db69e71610694456",
+      "request_id": "REQ-E14",
+      "material_id": "M04",
+      "channel": "short_video",
+      "account_id": "account-demo",
+      "revision": 1,
+      "proposed_at_utc": "2026-11-02T10:00:00Z",
+      "reservation_status": "reserved",
+      "proposal_hash": "67a7bb3c7b58e7664488b5b3587fd63fb3feee6eec2cc9dc1142f6eca55c567d",
+      "material_version": "485d1d9ddbe7f97b3394834d97ff2329a63ff23d0d2b935b436e1cdd7a1da359",
+      "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+      "updated_at": "2026-11-01T09:00:00+08:00",
+      "proposed_at": "2026-11-02T18:00:00+08:00",
+      "confirmation": null
+    }
+  ],
+  "slots": [
+    {
+      "channel": "short_video",
+      "account_id": "account-demo",
+      "slot_start_utc": "2026-11-02T10:00:00Z",
+      "owner_type": "draft",
+      "owner_id": "D-db69e71610694456"
+    }
+  ]
+}

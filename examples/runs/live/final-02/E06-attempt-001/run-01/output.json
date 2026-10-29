@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-40e54971042f47e691703c130775dfb5",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "failed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": "SAVE_FAILED",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T18:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "not_required",
+      "pending_questions": [
+        "请确认素材排期系统当前是否可用？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "failed",
+        "error_code": "SAVE_FAILED",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_6576e262fd9e468593326c",
+        "call_537530785e9a4a84b49f12",
+        "call_5ee5e7dd8de947a696ff55",
+        "call_299b975f88504766a9c4d2",
+        "call_3b72e33dd04147b5a5f8c4",
+        "call_027b006ca25249a68aab5f"
+      ],
+      "message": "本次草稿保存失败，未记为完成。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 7,
+    "tool_calls_used": 6,
+    "elapsed_ms": 19127,
+    "provider_usage": {
+      "total_tokens": 19566,
+      "completion_tokens": 423,
+      "prompt_tokens": 19143
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

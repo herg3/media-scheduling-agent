@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-2d78f6007e73445c9b1b79b03c23e7e1",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "failed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": "SAVE_FAILED",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T18:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "not_required",
+      "pending_questions": [
+        "请检查调度系统保存接口是否临时不可用？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "failed",
+        "error_code": "SAVE_FAILED",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_766e2661675f4d69aa5716",
+        "call_18f7526500894b72b95fd5",
+        "call_6dd2cc81ea4640cea7c5bc",
+        "call_3d4aa3e74b4d44cfb6be34",
+        "call_89d8466172764b3581de91",
+        "call_1ff57058121046e2a3b181",
+        "call_3b3bec5842e64ad897dcd5"
+      ],
+      "message": "本次草稿保存失败，未记为完成。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 8,
+    "tool_calls_used": 7,
+    "elapsed_ms": 23011,
+    "provider_usage": {
+      "total_tokens": 22393,
+      "completion_tokens": 575,
+      "prompt_tokens": 21818
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

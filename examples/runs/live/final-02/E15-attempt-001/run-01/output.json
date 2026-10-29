@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-e56a4bab51e64c318337313167f5dd2d",
+  "backend": "live",
+  "run_status": "partial",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "completed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": null,
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T18:00:00+08:00",
+      "effective_at": "2026-11-02T18:00:00+08:00",
+      "confirmation_status": "not_required",
+      "pending_questions": [],
+      "draft": {
+        "draft_id": "D-2c3de7a3baad416d",
+        "revision": 1,
+        "reservation_status": "reserved",
+        "save_status": "saved",
+        "error_code": null,
+        "is_current": true
+      },
+      "evidence_refs": [
+        "call_7fe1fa5667784f6b9aeca5",
+        "call_77af286eab134b3ba5e0d8",
+        "call_f0082ac8869041dab54dbb",
+        "call_12b3e7b448b34741a7daee",
+        "call_ef769811a7b0407083c5ed",
+        "call_f1f63ae4189b4afaaa6700",
+        "call_6875d5a15b2d47ef8869a1"
+      ],
+      "message": "排期草稿已核实并在本地占位，尚未发布。"
+    },
+    {
+      "material_id": "M03",
+      "task_status": "blocked",
+      "review_status": "blocked",
+      "warnings": [],
+      "reason_code": null,
+      "risks": [
+        {
+          "rule_id": "R-FORBIDDEN",
+          "severity": "BLOCK",
+          "field": "claims",
+          "message": "Unsupported absolute claim",
+          "source_id": "synthetic-main-03"
+        }
+      ],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [
+        "请确认是否可修改claims字段以移除绝对化医疗宣称？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": null,
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_aa952daca6dd4a4696d128",
+        "call_7cbbec3716704917b487e1"
+      ],
+      "message": "素材存在阻断风险，未完成排期；已有历史记录不代表当前可用。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 11,
+    "tool_calls_used": 9,
+    "elapsed_ms": 33003,
+    "provider_usage": {
+      "total_tokens": 30942,
+      "completion_tokens": 758,
+      "prompt_tokens": 30184
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

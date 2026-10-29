@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-021e6a3f2a154423a87f98f230af0cbd",
+  "backend": "mock",
+  "provider": "offline",
+  "model_id": "observation-aware-mock-v1",
+  "recorded_at_utc": "2026-10-29T08:10:15.437262+00:00",
+  "python": "3.13.14",
+  "sqlite": "3.50.4",
+  "synthetic_clock": "2026-11-01T09:00:00+08:00",
+  "fixture": {
+    "business_date": "2026-11-02",
+    "synthetic": true,
+    "synthetic_clock": "2026-11-01T09:00:00+08:00",
+    "version": "synthetic-v1"
+  },
+  "source_commit": "0e0004dd68859db931dca5265af59deab870626d",
+  "source_dirty": true,
+  "source_tree_sha256": "61d55d9c17032b6544b23e4bdace1f2160158dbb04fabf4b109977b6b60f9058",
+  "source_file_sha256": {
+    "src/scheduling_agent/__init__.py": "7d02a7be435dd807ae0207199e86b996a2d88c4bfce6de55562f1bb470e73036",
+    "src/scheduling_agent/__main__.py": "7c553ad38c59c5c872b956fb383fbae28a49fc39c16f8d284217fa55d519d96b",
+    "src/scheduling_agent/agent.py": "1ca68c3dd02e3e5bfaf25ab7cc9550b8f024f3846bd9c5d8b4ec4fbf6377b3ec",
+    "src/scheduling_agent/cli.py": "249bec1d7542ab200688a9eeb942b47ca1c50478e250f0713fdd8292a642d7f0",
+    "src/scheduling_agent/contracts.py": "a6d9398b95f431dfac09cb2c304b4a9258858576756790edb2298534b0b4fb83",
+    "src/scheduling_agent/evaluation.py": "e9b2086ffb7cf58572aa10a9cc605e66bf957b81cc6009b700d266cd7950d7d6",
+    "src/scheduling_agent/evidence.py": "d53bdc1ce461ba1fee91bbaafacd5e72356e69b310a7ebb5393ba02ef7aa829f",
+    "src/scheduling_agent/model.py": "ae1db3cc461c565786f99fce239965becc9561be9746372ac118a60a44f09200",
+    "src/scheduling_agent/policy.py": "22f4eb1d26b80d57a80bd4555249e42384ed42f7cb283c3d2ed94c03293d76cc",
+    "src/scheduling_agent/prompts.py": "fe4c1ec786a1af59c2465f0f0918059b741741bff3ca01acfa1487381430d8be",
+    "src/scheduling_agent/repository.py": "db16558e33b373b57afcbbbe9d4c71d6a2071f4fad875e8059d00ffaf53de353",
+    "src/scheduling_agent/tools.py": "533ca15816c6feabaf340550fe2be9c14e9478195f72ca9a47f6a48928ccdc3a",
+    "data/fixture-manifest.json": "b0f9f750feb36f54f65a55671b2db772c969ef9d1758ac4a6a93b4b52a6f5956",
+    "data/materials.json": "663db92ffeb8754145833602ffda3226a331adf596d1a7c9ccb898bf39ca2a58",
+    "data/rules.json": "b7d3d7a3eaeb58657334b01badc3e7e8c0dc82370e783aa8c8ff78907397b9ab",
+    "data/schedules.json": "a5338d955b09046ec0b16f3a9625b7955c763aae07dc722e474e6078745f932f",
+    "data/supplements.json": "d77a1d314a66103a9da22262eb8ef0ac156cc665d9c0d56650eb0220de82e6e3",
+    "pyproject.toml": "ee4c8e44960d0a3ac6ba6b1ebbe67f32ccd7a5452a194d39b063a26f4508780e",
+    "requirements.txt": "3124a8b1f3b112931b65cf8a1754e5b834ba0f6edd0642e3b010aa7d56cd3e48",
+    "requirements-dev.txt": "53bc7a0ef0e6786e1b131caa4dd68f33cd425004f8097439d48e28c83037f573"
+  },
+  "exit_code": 2,
+  "command": [
+    "python",
+    "-m",
+    "scheduling_agent",
+    "evaluate",
+    "--backend",
+    "mock",
+    "--cases",
+    "examples/cases",
+    "--output-dir",
+    "examples/runs/mock/final-02"
+  ],
+  "sha256": {
+    "input.json": "80892865e5cd8840e4a2eadf8e4217ddb87d2e308237b5d813a50a87eb6c5d95",
+    "model-messages.json": "566c8adde83f2a5f380fb93dca6e01083bd42444a4c7f81258fd7354e7c97ea3",
+    "output.json": "dc3511b860010e93ccac45f61ed317c5cdf60f92b66252ea97d0eaf4f2e0dc3c",
+    "readback.json": "1e479dd1f0eb2b5eb8e0a73ab433b8a8abdb37d3b3fb9f52d68fb4b6b089dc89",
+    "trace-summary.json": "f6677e5689c65aa3b56e5da5e4e0a30aea941a016ce36e3a71920d70c9f79c95",
+    "trace.jsonl": "55b0b840371bc1875617e43940933a56541cd92379a3b49a70d3ac2b0ce2a053"
+  }
+}

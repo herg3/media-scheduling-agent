@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-914f306afc084f32a5a13d0fb2f5b4e5",
+  "backend": "mock",
+  "run_status": "completed",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "completed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": null,
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T18:00:00+08:00",
+      "effective_at": "2026-11-02T18:00:00+08:00",
+      "confirmation_status": "not_required",
+      "pending_questions": [],
+      "draft": {
+        "draft_id": "D-de17ee0689f240c4",
+        "revision": 1,
+        "reservation_status": "reserved",
+        "save_status": "saved",
+        "error_code": null,
+        "is_current": true
+      },
+      "evidence_refs": [
+        "call-9f4efb1890b2",
+        "call-be9ab1cf9c86",
+        "call-51dd21390c4f",
+        "call-79491d0cec6c",
+        "call-fa69d04c377e"
+      ],
+      "message": "排期草稿已核实并在本地占位，尚未发布。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 6,
+    "tool_calls_used": 5,
+    "elapsed_ms": 23,
+    "provider_usage": {}
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。",
+    "离线Mock/Fake只证明流程，不证明真实模型决策。"
+  ]
+}

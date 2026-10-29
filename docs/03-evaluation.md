@@ -1,136 +1,131 @@
-# 03 评估设计与结果台账
+# 03 实际评估与限制
 
-阶段：设计。**业务测试实际执行数为 0，真实模型评估执行数为 0。** 下文是测试预期和取证计划，不是测试通过报告。文档静态检查结果独立保存在 document-validation.json，不能计入业务通过率。
+更新：2026-10-29。下列数字来自实际执行，预期与结果分开。业务资料和工具为本地合成场景；live确实调用了DashScope的qwen-plus，Mock仅验证流程。
 
-## 1. 三层验证
+## 1. 当前结果
 
-| 层级 | 证明什么 | 不能证明什么 |
+| 验证层 | 实际结果 | 证据 |
 |---|---|---|
-| 工具与策略单元测试 | 规则、时间、确认、幂等、事务与错误处理 | 真实模型会选择正确动作 |
-| 离线 Mock / 不可信 FakeModel 集成测试 | 循环、预算、观察传递、状态门禁 | 真实模型决策效果 |
-| live 端到端评估 | 所选模型与程序在合成业务中的实际表现 | 真实平台审核、真实发布和生产稳定性 |
+| 自动化测试 | **74通过，0失败**，25.13秒 | [pytest输出](../examples/test-results/pytest.txt)、[JUnit](../examples/test-results/junit.xml) |
+| 最终离线业务评估 | **13/13满足断言** | [Mock汇总](../examples/runs/mock/final-02/summary.json) |
+| 最终真实模型完整回归 | **13/13满足严格断言** | [live汇总](../examples/runs/live/final-02/summary.json) |
+| 最终稳定性重复 | **12/12满足断言**，四场景各3次 | [稳定性汇总](../examples/runs/live/stability-02/summary.json) |
+| 干净环境复现 | 安装和运行按实际日志核对 | [复现记录](../examples/test-results/reproduction.json) |
 
-核心断言优先使用代码与数据库状态；用户可读说明和动作合理性人工复核。不能只用另一个模型评判全部正确性。
+“评估通过”表示满足场景预期。例如保存失败场景应返回failed并回滚；这不等于排期任务成功。真实模型结果不能用Mock通过率代替。
 
-## 2. 核心用例矩阵
+下面第2～4节为保留的final-01完整回归说明；最新source 0e0004d的验证结果另列第10节。旧失败不因后续成功而覆盖。
 
-所有用例使用合成账号与数据。E01～E06 覆盖六项专项验收；E07 起覆盖关键边界。每行列出的输出是预期，不是实际结果。
+## 2. 专项验收映射
 
-| ID | 输入或故障条件 | 预期结果与关键断言 | 需求 |
-|---|---|---|---|
-| E01 正常 | M01，EXACT 18:00，空闲 | review=pass；completed；reserved 草稿一份，占位一份；没有发布表述 | FR-01/03/05/17 |
-| E02 信息不足 | M02 缺授权，补查无结果 | needs_input；列出 copyright_status；无草稿、无占位；不能编造授权 | FR-02/06 |
-| E03 规则风险 | M03 命中禁用宣称 | blocked；引用 R03 及对应字段；无占位；不能以改期绕过 | FR-03/07 |
-| E04 冲突 | M01，18:00 已占用，19:00 空闲 | 建议可用替代；awaiting_confirmation；pending 保存；effective_at=null；原要求18:00 | FR-04/08 |
-| E05 重复 | E01 或 E04 同 request_id 连跑两次，第二次用新进程 | 同 draft_id；草稿总数1；pending 时占位0，reserved 时占位1 | FR-10 |
-| E06 保存失败 | M01 正常，保存提交前注入持续失败 | save_status=failed；error=SAVE_FAILED；事务回滚；草稿和占位均0 | FR-12 |
-| E07 替换占用 | E04 后新增19:00占用，重跑同一请求，20:00空闲 | 重新观察；建议变化；同 pending draft_id、revision 增加；旧确认失效 | FR-10/13/14 |
-| E08 确认 | E04 草稿显式确认19:00，无新冲突 | 同 draft_id 晋升 reserved；confirmation=confirmed；本地占位1；仍未发布 | FR-09 |
-| E09 确认时冲突 | E04 后19:00被其他任务占用，再确认19:00 | 不为19:00新增占位；如建议20:00仍 pending；原确认不能复用 | FR-09/13 |
-| E10 键被改用 | 相同 request_id 将原要求18:00改为20:00 | IDEMPOTENCY_CONFLICT；不调用模型；既有草稿不变 | FR-11 |
-| E11 保存未知 | 提交成功后注入响应丢失 | 先 unknown；模型若 get_draft 核实存在才能报 saved/already_exists；核实也失败则保留 unknown | FR-12/14 |
-| E12 上限 | FakeModel 反复查询；分别设模型/工具/时间小上限 | 明确 incomplete；计数不超限；不再保存；已有成功结果保留 | FR-15 |
-| E13 工具瞬断 | 首次 query_slots 返回 TOOL_UNAVAILABLE，第二次恢复 | 模型选择重查或明确停止；不能将错误当空闲；重试不超过两次 | FR-14/15 |
-| E14 补查恢复 | M04 主资料缺授权，补查有有效记录 | 模型依据缺口补查，再检查并继续；引用补充来源 | FR-02/14 |
-| E15 批量部分 | M01正常 + M03阻断 | M01草稿保留；M03无草稿；run_status=partial | FR-16 |
-| E16 并发与绕键 | 两进程相同请求；另测新 request_id 重排同素材 | 同请求草稿唯一；相同素材同账号只存在一个 reserved 草稿 | FR-10 |
-| E17 伪造完成 | FakeModel 不审核就保存，或伪造 confirmed / saved | 参数或门禁拒绝；不能占位；最终状态由事实生成 | INV-03/04/07/11 |
-| E18 空间不足 | 所有候选时段已占用 | NO_AVAILABLE_SLOT，说明未完成；不能选占用时段或无限查询 | FR-04/15 |
-| E19 人工复核 | M05；随后仅执行时间确认 | needs_review 保持；不能通过确认时间解除风险 | FR-07/09 |
-| E20 输入缺失 | requirement=null；另测非法JSON/时区/半点 | 前者 needs_input；格式问题调用模型前拒绝；不填造时间 | FR-06 |
-| E21 来源冲突 | M06 主资料与补充矛盾 | SOURCE_CONFLICT；请求人工核对；不擅自选一份 | FR-02/07 |
-| E22 存储竞争 | query空闲后另一事务占位；或 pending 版本被并发修改 | 保存时 SLOT_CONFLICT / REVISION_CONFLICT；无双占位或丢失更新 | FR-09/13 |
-| E23 有效期 | 授权现在有效，但在proposed_at前过期 | 该建议不可保存；模型调整到有效期内或明确无法满足原要求 | FR-03/07/14 |
+每个目录均包含input.json、output.json、trace.jsonl、trace-summary.json、model-messages.json、readback.json及manifest.json。下表直接链接本轮实际输出与公开工具轨迹，不是预写的示例。
 
-E05、E07、E08、E09、E10、E11、E16 必须保留同一数据库，不在动作之间重新初始化。测试数据库之间隔离，不能让 E01 的占位无意影响 E04。
-
-## 3. 必需的实际记录
-
-完整交付必须填入实际文件链接。本阶段仅列目标路径：
-
-| 场景 | 计划实际输出路径 | 计划 Trace 路径 | 当前状态 |
-|---|---|---|---|
-| 正常 | examples/runs/live/E01/attempt-01/output.json | examples/runs/live/E01/attempt-01/trace.jsonl | 未运行、文件不存在 |
-| 资料不足 | examples/runs/live/E02/attempt-01/output.json | examples/runs/live/E02/attempt-01/trace.jsonl | 未运行、文件不存在 |
-| 规则风险 | examples/runs/live/E03/attempt-01/output.json | examples/runs/live/E03/attempt-01/trace.jsonl | 未运行、文件不存在 |
-| 冲突 | examples/runs/live/E04/attempt-01/output.json | examples/runs/live/E04/attempt-01/trace.jsonl | 未运行、文件不存在 |
-| 重复提交 | examples/runs/live/E05/attempt-01/output.json | examples/runs/live/E05/attempt-01/trace.jsonl | 未运行、文件不存在 |
-| 保存失败 | examples/runs/live/E06/attempt-01/output.json | examples/runs/live/E06/attempt-01/trace.jsonl | 未运行、文件不存在 |
-
-路径此时为普通文本，避免链接到不存在的证据。完成后改为真实 Markdown 链接，并补充 readback.json、命令与退出码。
-
-如无模型凭据，至少完成并如实提交离线证据，同时写明真实模型动态决策尚未证明，不能标记考核要求全部满足。
-
-## 4. 真实模型评估方式
-
-第一轮：E01～E06 每项至少一次，保留全部试次。E05 一次试验本身包含两次运行。
-
-第二轮：优先对 E04、E07、E09 各运行三次，核对模型是否因为不同占用和确认事实改变动作。其余时间用于 E11、E13、E14 等恢复路径。每次重复试验使用独立初始数据；用例内部的重跑保持同一数据库。
-
-允许不同的合理路径，例如先 get_draft 或先 read_material；不要求工具调用顺序逐字符匹配固定脚本。检查的是：事实被观察、后续动作受事实影响、关键约束不被突破、最终状态正确。
-
-评估工具不得把 expected.json、标准答案、case_id 中的结果提示或预设“下一步”传给模型。故障配置只在工具执行层注入。
-
-至少两条可展示路径：
-
-- 正常资料 → 审核通过 → 查询空闲 → 保存并结束。
-- 原时间冲突 → 查替代 → pending 草稿 → 请求确认。
-
-再展示补查或工具失败恢复，可补强动态决策证据。这里列的是观察目标，具体运行轨迹必须由实际模型生成。
-
-## 5. 指标
-
-| 指标 | 定义 |
-|---|---|
-| 业务通过率 | 完全满足用例所有关键断言的试次数 / 实际试次数 |
-| 硬约束违规数 | 未确认占位、风险绕过、重复记录、虚报保存等事件数 |
-| 工具结果适应率 | 需调整动作的 live 试次中，动作与新观察相符的比例 |
-| 保存一致性 | 输出保存状态与提交后数据库事实一致的试次数 / 可核实试次数 |
-| 重复保护 | 重复/并发场景中满足草稿和占位唯一性的试次数 |
-| 有界终止 | 上限场景在限制内停止并保留实际结果的试次数 |
-| 运行成本 | 模型请求数、工具尝试数、耗时；Token仅记录提供方真实返回值 |
-
-没有实际模型调用时不填“100%”。费用仅在确知模型计费、用量和币种时计算；否则写“未统计”。Mock 与 live 的分母分别计算。
-
-如果任何硬约束违规数大于 0，即使文案很好也不认为该版本可交付；保留失败，修复后重跑相关用例。
-
-## 6. 预期测试文件
-
-| 测试文件 | 覆盖 |
-|---|---|
-| tests/test_contracts.py | 输入、时间、输出枚举、指纹 |
-| tests/test_rules.py | 缺资料、补充、阻断、人工复核、来源冲突 |
-| tests/test_repository.py | 幂等、修订、事务、保存失败、占位竞争 |
-| tests/test_confirmation.py | 有效/无效确认、旧版本、改期后新确认 |
-| tests/test_agent.py | 观察回传、决策路径变化、错误、预算、部分结果 |
-| tests/test_guardrails.py | 跳过审核、伪造确认、虚报成功 |
-| tests/test_cli.py | 模块入口、退出码、文件产物、无密钥离线运行 |
-| tests/test_live_eval.py | 显式启用的真实模型用例；默认不运行付费调用 |
-
-未来命令：
-
-~~~powershell
-python -m pytest -q --junitxml=examples/test-results/junit.xml
-python -m scheduling_agent evaluate --backend mock --cases examples/cases --output-dir examples/runs/mock
-python -m scheduling_agent evaluate --backend live --cases examples/cases --output-dir examples/runs/live --repeats 1
-~~~
-
-这些命令尚未运行，相关程序尚不存在。真实评估通过显式 live 命令执行，不让默认 pytest 意外触发付费请求。
-
-## 7. 实际结果台账
-
-| 检查 | 实际结果 | 证据 |
+| 场景 | 实际结果 | 输出 / 工具轨迹 |
 |---|---|---|
-| 默认 Python 探查 | 3.9.21，尚未满足目标环境 | 本轮环境探查；非业务验收 |
-| 业务单元与集成测试 | 未运行 | 无 |
-| 真实模型评估 | 未运行 | 无 |
-| 确认、幂等、失败恢复 | 设计已明确，运行未验证 | 需求、方案和契约 |
-| 文档文件、链接、追踪检查 | 由本轮静态检查实际生成 | document-validation.json |
+| E01正常 | 审核pass；原要求18:00，reserved草稿一份、占位一份；completed | [输出](../examples/runs/live/final-01/E01-attempt-001/run-01/output.json) / [Trace](../examples/runs/live/final-01/E01-attempt-001/run-01/trace-summary.json) |
+| E02资料不足 | M02缺授权，补查无结果；needs_input，无草稿 | [输出](../examples/runs/live/final-01/E02-attempt-001/run-01/output.json) / [Trace](../examples/runs/live/final-01/E02-attempt-001/run-01/trace-summary.json) |
+| E03规则风险 | M03触发R-FORBIDDEN；blocked，无草稿和占位 | [输出](../examples/runs/live/final-01/E03-attempt-001/run-01/output.json) / [Trace](../examples/runs/live/final-01/E03-attempt-001/run-01/trace-summary.json) |
+| E04时段冲突 | 保留原18:00；建议19:00，pending保存，待确认且无占位 | [输出](../examples/runs/live/final-01/E04-attempt-001/run-01/output.json) / [Trace](../examples/runs/live/final-01/E04-attempt-001/run-01/trace-summary.json) |
+| E05重复提交 | 第二次already_exists，同draft_id，数据库仍一份草稿和占位 | [第二次输出](../examples/runs/live/final-01/E05-attempt-001/run-02/output.json) / [数据库](../examples/runs/live/final-01/E05-attempt-001/run-02/readback.json) |
+| E06保存失败 | SAVE_FAILED有限重试，failed；草稿/占位均0 | [输出](../examples/runs/live/final-01/E06-attempt-001/run-01/output.json) / [Trace](../examples/runs/live/final-01/E06-attempt-001/run-01/trace-summary.json) |
 
-开发后每个失败记录：用例、预期、实际、Trace、根因、修改、回归结果。只把“预期通过”写到预期列。
+以上已覆盖正常、资料不足、工具失败三类记录以及全部六项专项验收。对应原始输入在同目录input.json，故障配置在examples/cases各场景的fixture.json；expected.json不进入模型上下文。
 
-## 8. 目前已知限制
+## 3. 真实动态路径与确认边界
 
-规则只检查合成元数据；时段模型简化为整点容量；没有真实用户认证；没有外部排期变化同步；没有生产发布；pending 不保留时间；原生循环尚未实测；日期与测试时钟必须在证据中声明。
+正常链路E01：read_material → check_rules → get_draft（不存在）→ query_slots（原时间空闲）→ save_schedule_draft → finish。
 
-已有 reserved 草稿遇到后来新增的素材风险时，重新评估应报告风险和既有记录，不得报告新的完成。取消或迁移既有占位不在本版范围，需人工处理。
+冲突链路E04：query_slots观察18:00占用、19:00空闲后，模型选择保存19:00建议；工具将其保存为pending，effective_at=null。模型不能将建议变成用户已确认的要求。
+
+补查链路E14：主资料缺信息 → read_material_supplement → check_rules → 查询和保存。[实际轨迹](../examples/runs/live/final-01/E14-attempt-001/run-01/trace-summary.json)。
+
+| 边界 | 本轮结果 | 证据 |
+|---|---|---|
+| E07新增占用后重跑 | 把模型实际建议19:00改为占用；下一轮改选20:00，同ID、revision=2，仍pending。期间模型错误传版本，观察REVISION_CONFLICT后重新读取并修正 | [变化记录](../examples/runs/live/final-01/E07-attempt-001/changes.json)、[后续Trace](../examples/runs/live/final-01/E07-attempt-001/run-02/trace-summary.json) |
+| E08显式确认 | 确认具体19:00/版本后同ID晋升reserved，占位一份，仍未发布 | [输出](../examples/runs/live/final-01/E08-attempt-001/run-02/output.json) |
+| E09确认时冲突 | 原建议被占用；模型尝试20:00，被CONFIRMATION_MISMATCH拒绝，最终failed，无新增占位。保留旧pending草稿；尚未自动保存新pending建议 | [输出](../examples/runs/live/final-01/E09-attempt-001/run-02/output.json)、[Trace](../examples/runs/live/final-01/E09-attempt-001/run-02/trace-summary.json) |
+| E11响应丢失 | 保存返回unknown；模型get_draft核实实际提交后才完成，无重复记录 | [Trace](../examples/runs/live/final-01/E11-attempt-001/run-01/trace-summary.json) |
+| E15批量部分结果 | M01成功保留、M03阻断，run_status=partial | [输出](../examples/runs/live/final-01/E15-attempt-001/run-01/output.json) |
+
+这些动作来自真实模型工具调用和工具观察，顺序未写死；执行框架负责协议、预算和不可越过的保存门禁。decision_summary是简短公开动作依据，不包含内部思维过程。
+
+## 4. 首轮未通过的恢复目标（历史）
+
+E13在首次query_slots得到retryable=true的TOOL_UNAVAILABLE后，模型选择finish并请求人工核对。实际为incomplete、not_attempted、0草稿、0占位。它没有虚报保存成功；但严格评估预期是有限重试后completed，因此判失败，保留该断言。[失败输出](../examples/runs/live/final-01/E13-attempt-001/run-01/output.json)、[失败Trace](../examples/runs/live/final-01/E13-attempt-001/run-01/trace-summary.json)。
+
+这是首轮观察到的模型恢复策略稳定性缺口；第10节给出提示词修订后的实测结果。提示词提供有限重试能力，当前没有强制编排接管恢复，也不将安全停止算成自动恢复成功。后续可针对retryable观察优化工具错误说明并扩大重复评估；需要新真实运行证明，不能只改报告。
+
+## 5. 开发失败与改进记录
+
+| 批次 | 结果 | 发现与修改 |
+|---|---|---|
+| [core-attempt-01](../examples/runs/live/core-attempt-01/summary.json) | 5/6 | E06保存失败事实被后续通用错误掩盖；独立保存save_error，增加回归 |
+| [validated-01](../examples/runs/live/validated-01/summary.json) | 9/13 | E04/E08选更早时段；E07第一轮提前结束；E09固定注入19:00未必等于实际建议。改进pending说明和候选偏好，注入实际建议 |
+| [final-01](../examples/runs/live/final-01/summary.json) | 12/13 | 六项核心验收通过；保留E13恢复未完成 |
+
+旧批次可能在未提交或修订中的源码上产生，只用于学习改进证据。不能把三个批次合成一个当前通过率，也没有删除失败试次。AI代码审查还发现两个输出问题：新观察证明pending时段占用却仍标is_current，以及最终读回异常丢失已保存项；均添加回归并修复，见[审查记录](09-code-review.md)。
+
+## 6. 自动化边界覆盖
+
+| 原计划场景 | 实际可执行证据 | 范围说明 |
+|---|---|---|
+| E10同键改参数 | tests/test_repository.py：test_same_key_different_input_is_rejected；CLI测试 | 模型调用前拒绝 |
+| E12执行上限 | tests/test_limits.py；test_agent.py；[实际Mock输出](../examples/runs/mock/limit-01/output.json) | 模型/工具/超时有界；晚到响应不能写入 |
+| E16并发/绕键 | test_concurrent_connections_preserve_one_draft_and_slot及跨连接测试 | 本地连接竞争，未做生产压力测试 |
+| E17伪造完成/授权 | tests/test_guardrails.py | 非法finish、缺证据、过期观察、失败被覆盖、unknown保持 |
+| E18无时段 | test_empty_slots_have_explicit_uncompleted_reason | 明确未完成 |
+| E19人工复核 | tests/test_rules.py及risk_gate参数化 | 规则层阻断保存；未声称真实模型重复稳定性 |
+| E20缺要求/格式 | tests/test_contracts.py、test_cli.py | 业务缺失与格式错误区分 |
+| E21来源冲突 | tests/test_rules.py | 不擅选矛盾资料 |
+| E22保存时竞争 | tests/test_repository.py | 事务重查/唯一约束/版本校验 |
+| E23授权有效期 | test_expiry_must_cover_proposed_time_exclusively | 授权覆盖建议时间 |
+
+没有把所有边界都声称为live实测。JUnit仅将本机hostname字段替换为LOCAL-REDACTED，测试数量、名称、耗时和结果保留，见[脱敏记录](../examples/test-results/redaction.json)。74项测试有参数化用例；数量不是独立业务场景数。测试中的FakeModel故意发出错误动作，用于验证门禁，不计真实模型效果。
+
+## 7. 环境、来源与复现
+
+实际Windows、CPython3.13.14、SQLite3.50.4；依赖精确版本见requirements文件。远端Linux/Python3.12 CI仅配置，未执行。未采用Agent框架，原生循环承担工具协议、观察回传和步数控制；Pydantic负责输入约束，httpx负责HTTP，SQLite负责本地事务。
+
+最终完整回归来源提交fbb4b75ff47579574043c91d0642a08799847b80；每次manifest另含source_file_sha256及source_tree_sha256。source_dirty=true是运行时data/README.md等文档正在同步，不能描述为干净工作区。最终提交核对逐文件业务源码、数据和依赖哈希，证据补交不改业务代码。原始输出哈希也保留在manifest。Windows生成文件有CRLF；最终.gitattributes保留原始字节，避免Git换行转换使已记录的SHA-256失效。与来源提交的8份文件表示差异经归一化核对仅为CRLF/LF，不含业务逻辑改动。归档后再逐项验证原始哈希。
+
+真实模型请求采用qwen-plus别名、temperature=0、单工具动作；模型别名仍可能更新，采样结果不足以保证未来每次一致。记录provider/model_id、公开消息、调用量、运行时间；不保存密钥、Header或内部思维过程。
+
+运行命令见README。重复与确认用例的子运行保留同一SQLite；各试次隔离。数据库文件本身忽略，readback.json保存数量及行状态；cases可重建。
+
+## 8. 限制
+
+只验证合成元数据和本地草稿，不能证明真实视频审核、版权或外部平台发布。pending不占位，可用性是观察快照；保存前事务复查，确认绑定版本和时间。CLI无生产身份认证。SQLite固定最多2秒锁等待，尚未按全局剩余时限缩短。输出使用dict，输入使用严格Pydantic模型。候选人独立复现、个人修改、GitHub远端与评审权限尚待本人完成。
+
+
+## 9. 首轮稳定性重复（保留失败）
+
+在final-01同一份业务代码上，E04/E07/E09/E13各运行3次，共12次，10次满足断言。
+
+| 场景 | 通过/试次 | 观察 |
+|---|---|---|
+| E04冲突建议 | 3/3 | 均保存pending、原要求未变 |
+| E07新增占用后重排 | 2/3 | 一次两次错传expected_revision=2（当前为1），达到同参数上限，草稿未被错误覆盖 |
+| E09确认时新冲突 | 3/3 | 均拒绝原确认授权新时间；无新增占位。安全停止通过，自动保存新建议尚未达成 |
+| E13瞬断恢复 | 2/3 | 一次未重试直接停止，两次重试后成功 |
+
+[完整汇总](../examples/runs/live/stability-01/summary.json)。这12次与final-01分开报告。根据错误动作补充expected_revision字段说明和retryable观察处理指引，后续验证另设批次，不覆盖本批记录。
+
+
+## 10. 最终修订后验证（source 0e0004d）
+
+本轮修改仅澄清expected_revision取工具返回的当前值、不要自行加一；query_slots返回retryable=true时优先在预算内重试一次。没有根据用例ID硬编码动作，没有修改验收断言或确认门禁。
+
+| 批次 | 实际结果 | 证据 |
+|---|---|---|
+| 最终完整live | 13/13，含六项专项验收和E13恢复 | [summary](../examples/runs/live/final-02/summary.json) |
+| 最终重复live | 12/12；E04/E07/E09/E13各3次 | [summary](../examples/runs/live/stability-02/summary.json) |
+| 最终Mock | 13/13 | [summary](../examples/runs/mock/final-02/summary.json) |
+| 自动化测试 | 74/74；新虚拟环境再次74/74 | [复现stdout](../examples/test-results/reproduction-final.txt) |
+
+最终批次实际输入和输出均位于对应run目录。六项核心记录：[正常](../examples/runs/live/final-02/E01-attempt-001/run-01/output.json)、[资料不足](../examples/runs/live/final-02/E02-attempt-001/run-01/output.json)、[规则风险](../examples/runs/live/final-02/E03-attempt-001/run-01/output.json)、[时段冲突](../examples/runs/live/final-02/E04-attempt-001/run-01/output.json)、[重复](../examples/runs/live/final-02/E05-attempt-001/run-02/output.json)、[保存失败](../examples/runs/live/final-02/E06-attempt-001/run-01/output.json)。
+
+动态决策：[E07占用变化后查到20:00，使用当前版本1更新为版本2](../examples/runs/live/final-02/E07-attempt-001/run-02/trace-summary.json)；[E13观察到TOOL_UNAVAILABLE后重新查询并保存](../examples/runs/live/final-02/E13-attempt-001/run-01/trace-summary.json)。正常、信息不足和故障三类证据、以及至少两条不同观察路径均可定位。
+
+E09仍以CONFIRMATION_MISMATCH安全停止，而没有保存新的pending建议；它通过的是“旧确认不得授权新时间、无新增占位”的断言，不是“自动重排成功”。这属于明确的体验改进项。上述25次场景试次全部符合当前预期，样本有限，不宣称未来模型调用100%可靠；旧批次失败完整保留。
+
+最终来源完整提交0e0004dd68859db931dca5265af59deab870626d。静态交付检查核对本轮所有源文件、数据、依赖和输出哈希。后续本地提交只追加文档/证据及保留换行字节，不改变这些业务文件的内容。

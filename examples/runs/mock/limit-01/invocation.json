@@ -1,0 +1,21 @@
+{
+  "environment_override": {
+    "MAX_MODEL_STEPS": "2"
+  },
+  "command": [
+    "python",
+    "-m",
+    "scheduling_agent",
+    "run",
+    "--input",
+    "examples/cases/E01/input.json",
+    "--backend",
+    "mock",
+    "--db",
+    "work/limits-demo.sqlite",
+    "--output-dir",
+    "examples/runs/mock/limit-01"
+  ],
+  "exit_code": 4,
+  "note": "CLI stdout is a compact run summary; full result read from output.json."
+}

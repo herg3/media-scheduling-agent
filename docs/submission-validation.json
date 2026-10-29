@@ -1,0 +1,14 @@
+{
+  "checked_at_utc": "2026-10-29T08:19:13.581741+00:00",
+  "scope": "Local artifact and source hash audit; not a comprehensive security assessment, candidate review, or remote GitHub verification.",
+  "files_checked": 1159,
+  "required_files_checked": 10,
+  "local_markdown_links_checked": 71,
+  "json_files_parsed": 962,
+  "jsonl_files_parsed": 147,
+  "final_run_manifests_verified": 52,
+  "known_environment_credentials_scan": "no matching known credential bytes",
+  "source_commit": "0e0004dd68859db931dca5265af59deab870626d",
+  "errors": [],
+  "passed": true
+}

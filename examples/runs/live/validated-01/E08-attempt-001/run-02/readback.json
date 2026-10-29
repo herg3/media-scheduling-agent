@@ -1,0 +1,49 @@
+{
+  "counts": {
+    "drafts": 1,
+    "draft_slots": 1
+  },
+  "drafts": [
+    {
+      "draft_id": "D-8955aa9b746a4c0a",
+      "request_id": "REQ-E08",
+      "material_id": "M01",
+      "channel": "short_video",
+      "account_id": "account-demo",
+      "revision": 2,
+      "proposed_at_utc": "2026-11-02T02:00:00Z",
+      "reservation_status": "reserved",
+      "proposal_hash": "df1a377ef66df7c833d6ea33fb0508ef8c549f3a06cf614a9c46743f591410ec",
+      "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+      "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+      "updated_at": "2026-11-01T09:00:00+08:00",
+      "proposed_at": "2026-11-02T10:00:00+08:00",
+      "confirmation": {
+        "confirmed_at": "2026-11-01T09:00:00+08:00",
+        "draft_id": "D-8955aa9b746a4c0a",
+        "material_id": "M01",
+        "proposal_hash": "df1a377ef66df7c833d6ea33fb0508ef8c549f3a06cf614a9c46743f591410ec",
+        "proposed_at_utc": "2026-11-02T02:00:00Z",
+        "request_id": "REQ-E08",
+        "revision": 1,
+        "source": "cli"
+      }
+    }
+  ],
+  "slots": [
+    {
+      "channel": "short_video",
+      "account_id": "account-demo",
+      "slot_start_utc": "2026-11-02T02:00:00Z",
+      "owner_type": "draft",
+      "owner_id": "D-8955aa9b746a4c0a"
+    },
+    {
+      "channel": "short_video",
+      "account_id": "account-demo",
+      "slot_start_utc": "2026-11-02T10:00:00Z",
+      "owner_type": "existing_schedule",
+      "owner_id": "fixture-18"
+    }
+  ]
+}

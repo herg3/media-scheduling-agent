@@ -1,1 +1,2 @@
-* text=auto eol=lf
+# Preserve recorded bytes so evidence/source SHA-256 survives Git checkout and archive.
+* -text whitespace=cr-at-eol

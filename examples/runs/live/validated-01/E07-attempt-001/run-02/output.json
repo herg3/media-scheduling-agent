@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-f479b7eabdd5439c9ff862431c36dd28",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "awaiting_confirmation",
+      "review_status": "pass",
+      "reason_code": null,
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T10:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "pending",
+      "pending_questions": [
+        "是否同意将素材M01的时间调整为2026-11-02T10:00:00+08:00？"
+      ],
+      "draft": {
+        "draft_id": "D-28c1890ddb9944af",
+        "revision": 1,
+        "reservation_status": "pending",
+        "save_status": "saved",
+        "error_code": null,
+        "is_current": true
+      },
+      "evidence_refs": [
+        "call_f01398a4f28047bc81822c",
+        "call_8737757594d74be48b2496",
+        "call_5e22663ef26541f38b6876",
+        "call_03caa4ec75884f13846079",
+        "call_170fdeccc00043db96feb7",
+        "call_4fa1859deb0f44a5908eb8"
+      ],
+      "message": "替代时间草稿已保存，待用户明确确认；尚未占位或发布。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 7,
+    "tool_calls_used": 6,
+    "elapsed_ms": 22267,
+    "provider_usage": {
+      "total_tokens": 18540,
+      "completion_tokens": 537,
+      "prompt_tokens": 18003
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

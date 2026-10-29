@@ -16,5 +16,7 @@
   "business_tests_run": 0,
   "live_model_evaluations_run": 0,
   "artifacts_committed": false,
-  "github_remote_created": false
+  "github_remote_created": false,
+  "historical_record": true,
+  "current_phase_reference": "implementation-log.json"
 }

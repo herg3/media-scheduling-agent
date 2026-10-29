@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-cba92b6aadc84d8d9a1dd3130fa24380",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "failed",
+      "review_status": "pass",
+      "reason_code": "SAVE_FAILED",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T18:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "not_required",
+      "pending_questions": [
+        "请检查排期系统后端服务状态与日志，确认save_schedule_draft接口是否异常？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "failed",
+        "error_code": "SAVE_FAILED",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_e3113671a0594c6780fa60",
+        "call_09e08669ae384ecda5e127",
+        "call_1058ae16b29d438f9403cc",
+        "call_11f49418aa2d43eeb25bed",
+        "call_98dfe4d01d7a49e18d8346",
+        "call_9c9b3337a45c473385f63d",
+        "call_6fea5e915dc14a669ca8b7"
+      ],
+      "message": "本次草稿保存失败，未记为完成。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 8,
+    "tool_calls_used": 7,
+    "elapsed_ms": 22426,
+    "provider_usage": {
+      "total_tokens": 20217,
+      "completion_tokens": 521,
+      "prompt_tokens": 19696
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

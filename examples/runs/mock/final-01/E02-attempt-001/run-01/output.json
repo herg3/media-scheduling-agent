@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-083768cd6f7d42cb8efbce5fa374d515",
+  "backend": "mock",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M02",
+      "task_status": "needs_input",
+      "review_status": "needs_information",
+      "warnings": [],
+      "reason_code": "DRAFT_NOT_FOUND",
+      "risks": [
+        {
+          "rule_id": "R-REQUIRED",
+          "severity": "MISSING",
+          "field": "copyright_status",
+          "message": "Required material information is missing",
+          "source_id": "synthetic-main-02"
+        }
+      ],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [
+        "请补充：copyright_status"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": "DRAFT_NOT_FOUND",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call-4201dd6aba2e",
+        "call-a1e4b100c68a",
+        "call-5cf4837be4b4",
+        "call-6321b04eaabd"
+      ],
+      "message": "资料或审核结论不足，请补充或人工核对。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 5,
+    "tool_calls_used": 4,
+    "elapsed_ms": 11,
+    "provider_usage": {}
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。",
+    "离线Mock/Fake只证明流程，不证明真实模型决策。"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-eaa402969a0b4800b1620474bcda5326",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "incomplete",
+      "review_status": "pass",
+      "reason_code": "NO_AVAILABLE_SLOT",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [
+        "请确认是否可将素材M01排期至2026-11-02日其他空闲时段（如10:00、15:00、20:00等）？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": "DRAFT_NOT_FOUND",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_b20e4a42521346c8960fc2",
+        "call_30252dfa5b4e40869639ea",
+        "call_078c28d83007497b858f77",
+        "call_6e351e3e1a2945c8bc9db8"
+      ],
+      "message": "任务未完成；保留已知实际状态，请查看原因与Trace。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 5,
+    "tool_calls_used": 4,
+    "elapsed_ms": 14042,
+    "provider_usage": {
+      "total_tokens": 10989,
+      "completion_tokens": 331,
+      "prompt_tokens": 10658
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。",
+    "OUTPUT_GROUNDED_BY_EVIDENCE"
+  ]
+}

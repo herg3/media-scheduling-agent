@@ -1,0 +1,284 @@
+{
+  "backend": "live",
+  "total": 6,
+  "passed": 5,
+  "failed": 1,
+  "results": [
+    {
+      "case_id": "E01",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "completed"
+          ],
+          "actual": [
+            "completed"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "completed"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 1
+      },
+      "runs": [
+        "RUN-b239c8cc379e41efa7e4e5f7cefd30af"
+      ]
+    },
+    {
+      "case_id": "E02",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "needs_input"
+          ],
+          "actual": [
+            "needs_input"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "needs_input"
+        ],
+        "save_status": [
+          "not_attempted"
+        ],
+        "drafts": 0,
+        "draft_slots": 0
+      },
+      "runs": [
+        "RUN-a2332dbd99124d339ceb5eb3e75cec81"
+      ]
+    },
+    {
+      "case_id": "E03",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "blocked"
+          ],
+          "actual": [
+            "blocked"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "blocked"
+        ],
+        "save_status": [
+          "not_attempted"
+        ],
+        "drafts": 0,
+        "draft_slots": 0
+      },
+      "runs": [
+        "RUN-970ebe07e17240c8aa9537138006c01e"
+      ]
+    },
+    {
+      "case_id": "E04",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "awaiting_confirmation"
+          ],
+          "actual": [
+            "awaiting_confirmation"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "awaiting_confirmation"
+        ],
+        "save_status": [
+          "saved"
+        ],
+        "drafts": 1,
+        "draft_slots": 0
+      },
+      "runs": [
+        "RUN-14f5509fd24240d8937fc11dc88a70a4"
+      ]
+    },
+    {
+      "case_id": "E05",
+      "repeat": 1,
+      "backend": "live",
+      "passed": true,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "completed"
+          ],
+          "actual": [
+            "completed"
+          ],
+          "passed": true
+        },
+        {
+          "field": "save_status",
+          "expected": [
+            "already_exists"
+          ],
+          "actual": [
+            "already_exists"
+          ],
+          "passed": true
+        },
+        {
+          "field": "drafts",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 1,
+          "actual": 1,
+          "passed": true
+        },
+        {
+          "field": "same_draft_id",
+          "expected": true,
+          "actual": true,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "completed"
+        ],
+        "save_status": [
+          "already_exists"
+        ],
+        "drafts": 1,
+        "draft_slots": 1,
+        "same_draft_id": true
+      },
+      "runs": [
+        "RUN-c615273aa5b84a4c811d2538369d4f05",
+        "RUN-2658ee5eb00b47a3957cf8e88d38eee0"
+      ]
+    },
+    {
+      "case_id": "E06",
+      "repeat": 1,
+      "backend": "live",
+      "passed": false,
+      "assertions": [
+        {
+          "field": "task_status",
+          "expected": [
+            "failed"
+          ],
+          "actual": [
+            "incomplete"
+          ],
+          "passed": false
+        },
+        {
+          "field": "drafts",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        },
+        {
+          "field": "draft_slots",
+          "expected": 0,
+          "actual": 0,
+          "passed": true
+        }
+      ],
+      "actual": {
+        "task_status": [
+          "incomplete"
+        ],
+        "save_status": [
+          "not_attempted"
+        ],
+        "drafts": 0,
+        "draft_slots": 0
+      },
+      "runs": [
+        "RUN-3c681cb15005461bbd812feefce6f386"
+      ]
+    }
+  ]
+}

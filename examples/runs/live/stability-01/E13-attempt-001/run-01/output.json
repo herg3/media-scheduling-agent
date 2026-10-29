@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-07994532159e48098b47212cbf72799b",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "incomplete",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": "TOOL_UNAVAILABLE",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [
+        "请确认时段查询服务是否已恢复？",
+        "是否允许降级为WINDOW模式并指定可接受的时间窗口？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": "TOOL_UNAVAILABLE",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_5a50ba6ca618405d9eb129",
+        "call_99519b7bddd0490a93249c",
+        "call_aea46d01a3604aedb4efd6",
+        "call_85aa17aa7f48465fa9e83f"
+      ],
+      "message": "任务未完成；保留已知实际状态，请查看原因与Trace。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 5,
+    "tool_calls_used": 4,
+    "elapsed_ms": 14666,
+    "provider_usage": {
+      "total_tokens": 11604,
+      "completion_tokens": 290,
+      "prompt_tokens": 11314
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。",
+    "OUTPUT_GROUNDED_BY_EVIDENCE"
+  ]
+}

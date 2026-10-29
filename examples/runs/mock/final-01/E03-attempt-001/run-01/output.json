@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-3df648e80ea540c0a802e33df92a030d",
+  "backend": "mock",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M03",
+      "task_status": "blocked",
+      "review_status": "blocked",
+      "warnings": [],
+      "reason_code": "DRAFT_NOT_FOUND",
+      "risks": [
+        {
+          "rule_id": "R-FORBIDDEN",
+          "severity": "BLOCK",
+          "field": "claims",
+          "message": "Unsupported absolute claim",
+          "source_id": "synthetic-main-03"
+        }
+      ],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": "DRAFT_NOT_FOUND",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call-a575990f2d96",
+        "call-42593a5c78f4",
+        "call-54b0bdbeb06f"
+      ],
+      "message": "素材存在阻断风险，未完成排期；已有历史记录不代表当前可用。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 4,
+    "tool_calls_used": 3,
+    "elapsed_ms": 8,
+    "provider_usage": {}
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。",
+    "离线Mock/Fake只证明流程，不证明真实模型决策。"
+  ]
+}

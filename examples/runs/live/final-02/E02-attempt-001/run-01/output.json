@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-35c1b47713b94af3ae8025eec6000c30",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M02",
+      "task_status": "needs_input",
+      "review_status": "needs_information",
+      "warnings": [],
+      "reason_code": null,
+      "risks": [
+        {
+          "rule_id": "R-REQUIRED",
+          "severity": "MISSING",
+          "field": "copyright_status",
+          "message": "Required material information is missing",
+          "source_id": "synthetic-main-02"
+        }
+      ],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [
+        "请提供M02的版权状态（如：原创、授权使用、公共领域等）"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": null,
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_ea7739e47cb44fb1a7b977",
+        "call_ff4aa91148bf4e83a6b7f5",
+        "call_6aab19faa21345c8b98991"
+      ],
+      "message": "资料或审核结论不足，请补充或人工核对。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 4,
+    "tool_calls_used": 3,
+    "elapsed_ms": 10080,
+    "provider_usage": {
+      "total_tokens": 9382,
+      "completion_tokens": 171,
+      "prompt_tokens": 9211
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "checked_at_utc": "2026-10-29T07:18:47.653170+00:00",
-  "scope": "Documentation static validation only; not business tests or live model evals.",
+  "scope": "Historical document-only validation at documentation phase, before business implementation. Current delivery checks are in submission-validation.json.",
   "markdown_files": 11,
   "required_files_checked": 12,
   "local_links_checked": 14,
@@ -122,5 +122,6 @@
       "sha256": "468a29b5f030f2595c08eae3fd00c88e12a5501791b7aa404b7ce8457e993f50",
       "bytes": 4326
     }
-  }
+  },
+  "historical_record": true
 }

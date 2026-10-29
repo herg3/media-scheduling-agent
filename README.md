@@ -1,65 +1,113 @@
 # 素材审核与发布排期 Agent
 
-选题：1。目标：帮助内容运营人员完成素材检查、时段协商和排期草稿保存。
+选题1。帮助内容运营人员读取素材、核对规则、处理时段冲突并保存排期草稿。
 
-**当前交付为需求与开发文档 v0.1（2026-10-29），业务程序尚未实现，尚不构成可提交的完整笔试项目。** 本目录没有真实模型运行记录、业务测试结果、GitHub URL 或最终提交 SHA。文中的命令、接口、数据和结果预期均属于开发规格，不能当作已经运行的证据。
+Python单Agent，原生工具调用循环，SQLite持久化，CLI运行。**只保存草稿，没有真实发布能力。** 元数据、规则和已有排期都是合成资料。
 
-## 从这里评审
+## 评审入口
 
-| 阅读顺序 | 文档 | 用途 |
-|---|---|---|
-| 1 | [需求分析](docs/01-requirements.md) | 用户、范围、验收条件和不能违反的业务约束 |
-| 2 | [技术方案](docs/02-solution.md) | 模型循环、状态、幂等、事务与技术取舍 |
-| 3 | [接口与数据契约](docs/07-contracts.md) | 输入输出、工具、错误码、数据库与确认凭据 |
-| 4 | [开发计划](docs/06-development-plan.md) | 实施顺序、文件职责、测试入口和预计时间 |
-| 5 | [评估设计与结果台账](docs/03-evaluation.md) | 验收矩阵、真实模型评估、当前未运行事实 |
-| 6 | [AI 使用记录](docs/04-ai-usage.md) | 本轮辅助范围、候选人贡献边界与验证要求 |
-| 7 | [阶段复盘](docs/05-retrospective.md) | 当前设计难点、学习材料、后续验证问题 |
-| 8 | [提交检查](docs/08-submission-checklist.md) | 交付规范、保密范围、证据及提交前门禁 |
+| 想核对的能力 | 入口 |
+|---|---|
+| 用户、范围、成功标准 | [需求分析](docs/01-requirements.md) |
+| 模型动态决策、确认与幂等 | [技术方案](docs/02-solution.md)、[循环实现](src/scheduling_agent/agent.py) |
+| 工具接口与保存事务 | [接口契约](docs/07-contracts.md)、[工具](src/scheduling_agent/tools.py)、[事务](src/scheduling_agent/repository.py) |
+| 实际输入、输出、Trace和失败 | [评估报告](docs/03-evaluation.md)、[证据目录](examples/README.md) |
+| AI辅助与个人贡献边界 | [AI使用记录](docs/04-ai-usage.md)、[实际复盘](docs/05-retrospective.md) |
+| 开发顺序与最终提交 | [开发计划](docs/06-development-plan.md)、[提交清单](docs/08-submission-checklist.md) |
 
-辅助说明：[合成数据设计](data/README.md)、[运行证据组织](examples/README.md)。
+当前本地已有完整代码：74项自动化测试通过、Mock13/13、最终live13/13、四类重复评估12/12。通过数与失败限制以[实际评估](docs/03-evaluation.md)为准；GitHub尚未上传。
 
-## 方案概要
+## 安装
 
-- 使用 Python、单 Agent、原生工具调用循环、SQLite 和 CLI。
-- 模型选择读取、补查、检查、查询、保存或结束；每次工具观察回传模型后再作下一步决定。
-- 程序控制参数、证据、确认权限、步数和数据库约束。
-- 只保存草稿。已确认且占位成功的草稿也不等于发布，程序没有发布工具。
-- 原发布时间要求、建议时间、用户确认和保存结果分别记录。
-- 合成元数据规则检查只能验证本题流程，不能证明真实视频内容安全或版权合法。
+最低Python3.12；本地实际验证环境为 **Windows + CPython3.13.14**。其他系统和Python3.12的CI已配置，尚未在远端运行。依赖均锁定确切版本。
 
-## 运行入口设计（尚不可执行）
-
-目标解释器为 Python 3.12；开发时在干净虚拟环境中锁定确切依赖。当前本机默认解释器探查结果是 Python 3.9.21，尚未安装或验证目标环境。
-
-以下命令是将来 CLI 必须实现的接口。依赖文件、源代码和用例输入尚不存在；完成实现并实际执行后，才能把本节改为“已验证运行步骤”。
+Windows PowerShell：
 
 ~~~powershell
-py -3.12 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
+py -3.13 -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
 .\.venv\Scripts\python.exe -m pip install -e . --no-deps
-
-.\.venv\Scripts\python.exe -m scheduling_agent init-db --data-dir data --db work/demo.sqlite
-.\.venv\Scripts\python.exe -m scheduling_agent init-db --data-dir data --db work/live.sqlite
-.\.venv\Scripts\python.exe -m scheduling_agent run --input examples/cases/E01/input.json --backend mock --db work/demo.sqlite --output-dir work/run-E01
-.\.venv\Scripts\python.exe -m scheduling_agent run --input examples/cases/E04/input.json --backend live --db work/live.sqlite --output-dir work/run-E04
-.\.venv\Scripts\python.exe -m pytest -q --junitxml=examples/test-results/junit.xml
 ~~~
 
-凭据由本机环境变量提供，不在聊天、代码或运行记录中填写真实值。配置名称与离线行为见[接口与配置契约](docs/07-contracts.md#8-配置契约)。
+Linux/macOS：
 
-init-db 只初始化不存在的数据库，读取 fixture-manifest.json 并记录合成时钟；已有数据库拒绝覆盖。evaluate 为独立试次建立隔离数据库，但同一用例内的重复/确认共享数据库。运行结果明确展示合成场景与固定时钟。
+~~~bash
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements-dev.txt
+.venv/bin/python -m pip install -e . --no-deps
+~~~
 
-## 当前验证边界
+以下示例使用Windows解释器路径；其他系统替换对应路径。仅运行业务程序安装requirements.txt即可。
 
-| 项目 | 当前状态 |
+## 一分钟离线运行
+
+Mock不需要密钥、不访问网络，只验证流程。数据库和输出目录首次使用时必须不存在或为空，避免覆盖运行记录。
+
+~~~powershell
+.\.venv\Scripts\python.exe -m scheduling_agent init-db --data-dir data --db work/demo.sqlite
+.\.venv\Scripts\python.exe -m scheduling_agent run --input examples/cases/E01/input.json --backend mock --db work/demo.sqlite --output-dir work/demo-run
+~~~
+
+查看work/demo-run/output.json、trace-summary.json和readback.json。正常场景退出码0，审核通过、草稿reserved、保存成功；仍未发布。
+
+一次复现全部合成场景：
+
+~~~powershell
+.\.venv\Scripts\python.exe -m scheduling_agent evaluate --backend mock --cases examples/cases --output-dir work/mock-evaluation
+.\.venv\Scripts\python.exe -m pytest -q --junitxml=work/junit.xml
+~~~
+
+evaluate通过表示实际结果满足场景预期；“预期保存失败”的场景也可以通过评估，不会把业务失败改为成功。
+
+## 真实模型运行
+
+使用通用Chat Completions工具调用协议，经本机DashScope的qwen-plus实测。程序直接读取进程环境变量，不自动加载.env。配置见[.env.example](.env.example)。
+
+通用提供方设置LLM_API_KEY、LLM_BASE_URL、LLM_MODEL。DashScope也接受已有DASHSCOPE_API_KEY，并默认北京兼容接口和qwen-plus；地域不匹配时显式设置接口和模型。密钥仅在本地配置，不提交或粘贴到聊天。
+
+~~~powershell
+.\.venv\Scripts\python.exe -m scheduling_agent evaluate --backend live --cases examples/cases --case-ids E01,E02,E03,E04,E05,E06 --output-dir work/live-evaluation
+~~~
+
+live产生真实模型调用和费用；配置缺失或模型失败时明确错误，不自动降级Mock。实际记录见评估报告。模型别名可能更新，证据保留请求模型ID与时间。
+
+## 冲突与确认
+
+E04原要求18:00被占用，19:00可用。模型保存19:00的pending建议，保留原要求18:00，effective_at=null，pending不占位。
+
+确认命令参数格式如下；草稿ID和版本必须取自自己的output.json，示例ID不能直接复用：
+
+~~~powershell
+.\.venv\Scripts\python.exe -m scheduling_agent confirm --draft-id D-实际草稿ID --revision 1 --proposed-at "2026-11-02T19:00:00+08:00" --backend mock --db work/demo.sqlite --output-dir work/confirm-run
+~~~
+
+完整确认与新冲突演示：
+
+~~~powershell
+.\.venv\Scripts\python.exe -m scheduling_agent evaluate --backend mock --cases examples/cases --case-ids E04,E07,E08,E09 --output-dir work/confirmation-evaluation
+~~~
+
+确认绑定具体草稿版本和时间。新占用或建议变化后，旧确认失效；确认后仍只有本地草稿。
+
+## 限制与退出码
+
+默认24次模型请求、20次工具尝试、180秒；同工具同业务参数最多两次。达到限制明确未完成，保留已成功项。
+
+| 退出码 | 含义 |
 |---|---|
-| 需求与设计 | 已形成供评审的文档 |
-| 代码与锁定依赖 | 未实现 |
-| 离线流程测试 | 未运行 |
-| 真实模型决策评估 | 未运行 |
-| 三类实际输入、输出、Trace | 未生成 |
-| Git 仓库、远端权限、最终 SHA | 未建立或验证 |
+| 0 | 全部完成；或evaluate全部预期断言通过 |
+| 2 | 待确认、待补充、规则阻断 |
+| 3 | 输入/确认/幂等冲突，或拒绝覆盖证据 |
+| 4 | 模型/工具失败、上限；或评估断言不符 |
+| 5 | 批量部分完成 |
 
-文档检查只验证文件、链接和需求追踪，不验证未来程序正确性。文档检查的实际结果单独记录在 docs/document-validation.json。
+## 证据和能力边界
+
+实际记录包含输入、输出、工具Trace、公开动作依据、数据库读回、代码来源哈希；首次开发失败也保留。见[评估报告](docs/03-evaluation.md)。
+
+- 只检查合成元数据，不读取真实视频，不证明生产内容安全或版权。
+- 同账号每整点一个容量，仅Asia/Shanghai。
+- CLI确认代表本地操作者授权，没有生产身份认证。
+- reserved草稿不能自动迁移；取消、真实平台同步和部署未实现。
+- 固定合成时钟2026-11-01，业务日期2026-11-02，输出明确标记。
+- 候选人独立复现、GitHub上传和评审权限尚待本人完成。

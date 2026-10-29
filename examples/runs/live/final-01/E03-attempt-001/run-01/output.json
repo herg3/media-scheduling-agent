@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-52130f6d602c45659d126b2177a61055",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M03",
+      "task_status": "blocked",
+      "review_status": "blocked",
+      "warnings": [],
+      "reason_code": null,
+      "risks": [
+        {
+          "rule_id": "R-FORBIDDEN",
+          "severity": "BLOCK",
+          "field": "claims",
+          "message": "Unsupported absolute claim",
+          "source_id": "synthetic-main-03"
+        }
+      ],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": null,
+      "effective_at": null,
+      "confirmation_status": "not_applicable",
+      "pending_questions": [
+        "请确认是否需修改claims字段以移除绝对化医疗宣称？"
+      ],
+      "draft": {
+        "draft_id": null,
+        "revision": null,
+        "reservation_status": "none",
+        "save_status": "not_attempted",
+        "error_code": null,
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_09bbe20643c747d099a3d4",
+        "call_d3ec8ae2766c46cf801550"
+      ],
+      "message": "素材存在阻断风险，未完成排期；已有历史记录不代表当前可用。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 3,
+    "tool_calls_used": 2,
+    "elapsed_ms": 7632,
+    "provider_usage": {
+      "total_tokens": 6234,
+      "completion_tokens": 140,
+      "prompt_tokens": 6094
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

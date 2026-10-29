@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-a2458eb1aa314f83a9ce822c274542cd",
+  "backend": "mock",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "failed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": "CONFIRMATION_MISMATCH",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T20:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "pending",
+      "pending_questions": [],
+      "draft": {
+        "draft_id": "D-4e8f66626cf3442e",
+        "revision": 1,
+        "reservation_status": "pending",
+        "save_status": "failed",
+        "error_code": "CONFIRMATION_MISMATCH",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call-ab4dd0231fc6",
+        "call-e09e9c5c7609",
+        "call-397838558023",
+        "call-9a785917fa68",
+        "call-e046c5be3843"
+      ],
+      "message": "本次草稿保存失败，未记为完成。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 6,
+    "tool_calls_used": 5,
+    "elapsed_ms": 15,
+    "provider_usage": {}
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。",
+    "离线Mock/Fake只证明流程，不证明真实模型决策。"
+  ]
+}

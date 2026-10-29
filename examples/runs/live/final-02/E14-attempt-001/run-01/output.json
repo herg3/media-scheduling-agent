@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-1170cf40b0f248d888cc736552dce4c6",
+  "backend": "live",
+  "run_status": "completed",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M04",
+      "task_status": "completed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": null,
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T18:00:00+08:00",
+      "effective_at": "2026-11-02T18:00:00+08:00",
+      "confirmation_status": "not_required",
+      "pending_questions": [],
+      "draft": {
+        "draft_id": "D-10cbaf4ac61749e1",
+        "revision": 1,
+        "reservation_status": "reserved",
+        "save_status": "saved",
+        "error_code": null,
+        "is_current": true
+      },
+      "evidence_refs": [
+        "call_f68e351961cf45a1a08c28",
+        "call_903fd15434ce4beb8829d5",
+        "call_bee27d51eeb342cd8a680d",
+        "call_5f9d226f15c0411e96b3cb",
+        "call_937975bd9156444aac87b5",
+        "call_a0de5f43982b461985ed8b"
+      ],
+      "message": "排期草稿已核实并在本地占位，尚未发布。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 7,
+    "tool_calls_used": 6,
+    "elapsed_ms": 20983,
+    "provider_usage": {
+      "total_tokens": 20359,
+      "completion_tokens": 454,
+      "prompt_tokens": 19905
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "recorded_at_utc": "2026-10-29T08:15:46.946256+00:00",
+  "files": [
+    "junit.xml",
+    "reproduction-junit.xml"
+  ],
+  "changes": "Only JUnit testsuite hostname replaced with LOCAL-REDACTED; test names, counts, times and outcomes unchanged."
+}

@@ -1,0 +1,89 @@
+{
+  "recorded_at_utc": "2026-10-29T08:07:08.399400+00:00",
+  "environment": "new venv created with py -3.13 -m venv; Windows CPython 3.13.14",
+  "install_commands": [
+    "python -m pip install -r requirements-dev.txt",
+    "python -m pip install -e . --no-deps"
+  ],
+  "install_exit_codes": [
+    0,
+    0
+  ],
+  "install_observation": "Observed successful install in separate tool output; download cache was reused. This is a fresh venv on the same computer, not a new OS.",
+  "steps": [
+    {
+      "command": [
+        "python",
+        "-m",
+        "pip",
+        "check"
+      ],
+      "exit_code": 0,
+      "log": "reproduction-step-1.txt"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "scheduling_agent",
+        "init-db",
+        "--data-dir",
+        "data",
+        "--db",
+        "work/reproduction-demo.sqlite"
+      ],
+      "exit_code": 0,
+      "log": "reproduction-step-2.txt"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "scheduling_agent",
+        "run",
+        "--input",
+        "examples/cases/E01/input.json",
+        "--backend",
+        "mock",
+        "--db",
+        "work/reproduction-demo.sqlite",
+        "--output-dir",
+        "work/reproduction-demo"
+      ],
+      "exit_code": 0,
+      "log": "reproduction-step-3.txt"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "scheduling_agent",
+        "evaluate",
+        "--backend",
+        "mock",
+        "--cases",
+        "examples/cases",
+        "--output-dir",
+        "work/reproduction-evaluation"
+      ],
+      "exit_code": 0,
+      "log": "reproduction-step-4.txt"
+    },
+    {
+      "command": [
+        "python",
+        "-m",
+        "pytest",
+        "-q",
+        "--junitxml=examples/test-results/reproduction-junit.xml"
+      ],
+      "exit_code": 0,
+      "log": "reproduction-step-5.txt"
+    }
+  ],
+  "passed": true,
+  "source_after_prompt_revision": "0e0004d",
+  "final_recheck_note": "After source 0e0004d, Mock13/13 and pytest74/74 passed again in this new venv; see reproduction-final.txt, reproduction-junit.xml and mock/final-02.",
+  "final_recheck_exit_code": 0,
+  "final_recheck_at_utc": "2026-10-29T08:11:55.369103+00:00"
+}

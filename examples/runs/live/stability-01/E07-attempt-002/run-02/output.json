@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-57028a051b5a43c1b932d61e8d54bb28",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "TOOL_CALL_LIMIT",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "failed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": "REVISION_CONFLICT",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T20:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "pending",
+      "pending_questions": [],
+      "draft": {
+        "draft_id": "D-19e4c72a8e0845ca",
+        "revision": 1,
+        "reservation_status": "pending",
+        "save_status": "failed",
+        "error_code": "REVISION_CONFLICT",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_5eaca8abf7b941818857c2",
+        "call_72f69dbf5fc04b2084ecb4",
+        "call_d7f8be14987e46389d3ec5",
+        "call_ca2b5e78a2d047d7a79c83",
+        "call_06bf05c01fe54b44976e76",
+        "call_ad63ff20476f421f87dbda",
+        "call_3cc59baef5bf4d1eb3ee2e"
+      ],
+      "message": "本次草稿保存失败，未记为完成。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 8,
+    "tool_calls_used": 8,
+    "elapsed_ms": 22524,
+    "provider_usage": {
+      "total_tokens": 25564,
+      "completion_tokens": 498,
+      "prompt_tokens": 25066
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

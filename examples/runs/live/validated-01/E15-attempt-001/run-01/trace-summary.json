@@ -1,0 +1,405 @@
+[
+  {
+    "schema_version": 1,
+    "run_id": "RUN-ca96f323121e407cb91323623f91917b",
+    "case_id": "E15",
+    "backend": "live",
+    "provider": "dashscope",
+    "model_id": "qwen-plus",
+    "event_index": 2,
+    "event_type": "tool_result",
+    "elapsed_ms": 2373,
+    "model_steps_used": 1,
+    "tool_calls_used": 1,
+    "step": 1,
+    "tool": "read_material",
+    "tool_call_id": "call_f7c242026a1141b2a22790",
+    "arguments": {
+      "material_id": "M01",
+      "decision_summary": "读取素材M01的合成元数据与缺失字段"
+    },
+    "observation_summary": {
+      "tool_call_id": "call_f7c242026a1141b2a22790",
+      "ok": true,
+      "data": {
+        "metadata": {
+          "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+          "claims": [],
+          "content_tags": [
+            "synthetic"
+          ],
+          "copyright_status": "authorized",
+          "duration_seconds": 30,
+          "supplement_available": false,
+          "title": "Synthetic training material"
+        },
+        "source_id": "synthetic-main-01",
+        "missing_fields": [],
+        "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9"
+      },
+      "error": null,
+      "evidence": {
+        "observed_at": "2026-11-01T09:00:00+08:00",
+        "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+        "rules_version": null,
+        "source_ids": []
+      }
+    },
+    "error_code": null,
+    "evidence_versions": {
+      "observed_at": "2026-11-01T09:00:00+08:00",
+      "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+      "rules_version": null,
+      "source_ids": []
+    },
+    "next_action": {
+      "event_index": 3,
+      "tool": "check_rules",
+      "decision_summary": "执行审核规则检查M01"
+    }
+  },
+  {
+    "schema_version": 1,
+    "run_id": "RUN-ca96f323121e407cb91323623f91917b",
+    "case_id": "E15",
+    "backend": "live",
+    "provider": "dashscope",
+    "model_id": "qwen-plus",
+    "event_index": 4,
+    "event_type": "tool_result",
+    "elapsed_ms": 4718,
+    "model_steps_used": 2,
+    "tool_calls_used": 2,
+    "step": 2,
+    "tool": "check_rules",
+    "tool_call_id": "call_90079ff5fa344ee6867c7e",
+    "arguments": {
+      "decision_summary": "执行审核规则检查M01",
+      "material_id": "M01"
+    },
+    "observation_summary": {
+      "tool_call_id": "call_90079ff5fa344ee6867c7e",
+      "ok": true,
+      "data": {
+        "review_status": "pass",
+        "findings": [],
+        "valid_until": "2026-11-30T16:00:00Z",
+        "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+        "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+        "source_ids": [
+          "synthetic-main-01"
+        ]
+      },
+      "error": null,
+      "evidence": {
+        "observed_at": "2026-11-01T09:00:00+08:00",
+        "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+        "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+        "source_ids": [
+          "synthetic-main-01"
+        ]
+      }
+    },
+    "error_code": null,
+    "evidence_versions": {
+      "observed_at": "2026-11-01T09:00:00+08:00",
+      "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+      "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+      "source_ids": [
+        "synthetic-main-01"
+      ]
+    },
+    "next_action": {
+      "event_index": 5,
+      "tool": "get_draft",
+      "decision_summary": "查询M01当前草稿状态"
+    }
+  },
+  {
+    "schema_version": 1,
+    "run_id": "RUN-ca96f323121e407cb91323623f91917b",
+    "case_id": "E15",
+    "backend": "live",
+    "provider": "dashscope",
+    "model_id": "qwen-plus",
+    "event_index": 6,
+    "event_type": "tool_result",
+    "elapsed_ms": 7083,
+    "model_steps_used": 3,
+    "tool_calls_used": 3,
+    "step": 3,
+    "tool": "get_draft",
+    "tool_call_id": "call_422f2201350b4c89a28a29",
+    "arguments": {
+      "decision_summary": "查询M01当前草稿状态",
+      "material_id": "M01"
+    },
+    "observation_summary": {
+      "tool_call_id": "call_422f2201350b4c89a28a29",
+      "ok": false,
+      "data": {},
+      "error": {
+        "code": "DRAFT_NOT_FOUND",
+        "message": "本请求尚无该素材草稿。",
+        "retryable": false
+      },
+      "evidence": {
+        "observed_at": "2026-11-01T09:00:00+08:00"
+      }
+    },
+    "error_code": "DRAFT_NOT_FOUND",
+    "evidence_versions": {
+      "observed_at": "2026-11-01T09:00:00+08:00"
+    },
+    "next_action": {
+      "event_index": 7,
+      "tool": "query_slots",
+      "decision_summary": "查询M01在EXACT时间2026-11-02T18:00:00+08:00是否空闲"
+    }
+  },
+  {
+    "schema_version": 1,
+    "run_id": "RUN-ca96f323121e407cb91323623f91917b",
+    "case_id": "E15",
+    "backend": "live",
+    "provider": "dashscope",
+    "model_id": "qwen-plus",
+    "event_index": 8,
+    "event_type": "tool_result",
+    "elapsed_ms": 11304,
+    "model_steps_used": 4,
+    "tool_calls_used": 4,
+    "step": 4,
+    "tool": "query_slots",
+    "tool_call_id": "call_dd9dd61497634e47a30532",
+    "arguments": {
+      "decision_summary": "查询M01在EXACT时间2026-11-02T18:00:00+08:00是否空闲",
+      "material_id": "M01",
+      "search_end": "2026-11-02T19:00:00+08:00",
+      "search_start": "2026-11-02T18:00:00+08:00"
+    },
+    "observation_summary": {
+      "tool_call_id": "call_dd9dd61497634e47a30532",
+      "ok": true,
+      "data": {
+        "requested_slot": "2026-11-02T18:00:00+08:00",
+        "requested_slot_available": true,
+        "available_slots": [
+          "2026-11-02T18:00:00+08:00"
+        ],
+        "has_more": false,
+        "occupied_slots": [],
+        "schedule_version": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "existing_draft_id": null
+      },
+      "error": null,
+      "evidence": {
+        "observed_at": "2026-11-01T09:00:00+08:00",
+        "material_version": null,
+        "rules_version": null,
+        "source_ids": []
+      }
+    },
+    "error_code": null,
+    "evidence_versions": {
+      "observed_at": "2026-11-01T09:00:00+08:00",
+      "material_version": null,
+      "rules_version": null,
+      "source_ids": []
+    },
+    "next_action": {
+      "event_index": 9,
+      "tool": "save_schedule_draft",
+      "decision_summary": "保存M01在2026-11-02T18:00:00+08:00的排期草稿"
+    }
+  },
+  {
+    "schema_version": 1,
+    "run_id": "RUN-ca96f323121e407cb91323623f91917b",
+    "case_id": "E15",
+    "backend": "live",
+    "provider": "dashscope",
+    "model_id": "qwen-plus",
+    "event_index": 10,
+    "event_type": "tool_result",
+    "elapsed_ms": 15488,
+    "model_steps_used": 5,
+    "tool_calls_used": 5,
+    "step": 5,
+    "tool": "save_schedule_draft",
+    "tool_call_id": "call_d1e3fb68108e4110a3a6fe",
+    "arguments": {
+      "decision_summary": "保存M01在2026-11-02T18:00:00+08:00的排期草稿",
+      "expected_revision": null,
+      "material_id": "M01",
+      "proposed_at": "2026-11-02T18:00:00+08:00"
+    },
+    "observation_summary": {
+      "tool_call_id": "call_d1e3fb68108e4110a3a6fe",
+      "ok": true,
+      "data": {
+        "draft_id": "D-4b22156765c14edc",
+        "request_id": "REQ-E15",
+        "material_id": "M01",
+        "channel": "short_video",
+        "account_id": "account-demo",
+        "revision": 1,
+        "proposed_at_utc": "2026-11-02T10:00:00Z",
+        "reservation_status": "reserved",
+        "proposal_hash": "f65aaf3e253f6660eb4b9ff8a4a47cdb52410146200b0076898227ec04c5160c",
+        "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+        "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+        "updated_at": "2026-11-01T09:00:00+08:00",
+        "proposed_at": "2026-11-02T18:00:00+08:00",
+        "confirmation": null,
+        "save_status": "saved",
+        "is_current": true
+      },
+      "error": null,
+      "evidence": {
+        "observed_at": "2026-11-01T09:00:00+08:00",
+        "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+        "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+        "source_ids": []
+      }
+    },
+    "error_code": null,
+    "evidence_versions": {
+      "observed_at": "2026-11-01T09:00:00+08:00",
+      "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+      "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+      "source_ids": []
+    },
+    "next_action": {
+      "event_index": 11,
+      "tool": "finish",
+      "decision_summary": "M01已成功排期至2026-11-02T18:00:00+08:00，状态reserved"
+    }
+  },
+  {
+    "schema_version": 1,
+    "run_id": "RUN-ca96f323121e407cb91323623f91917b",
+    "case_id": "E15",
+    "backend": "live",
+    "provider": "dashscope",
+    "model_id": "qwen-plus",
+    "event_index": 13,
+    "event_type": "tool_result",
+    "elapsed_ms": 20529,
+    "model_steps_used": 7,
+    "tool_calls_used": 6,
+    "step": 7,
+    "tool": "read_material",
+    "tool_call_id": "call_c203cc1b0be946d0ae201e",
+    "arguments": {
+      "material_id": "M03",
+      "decision_summary": "读取素材M03的合成元数据与缺失字段"
+    },
+    "observation_summary": {
+      "tool_call_id": "call_c203cc1b0be946d0ae201e",
+      "ok": true,
+      "data": {
+        "metadata": {
+          "authorization_expires_at": "2026-12-01T00:00:00+08:00",
+          "claims": [
+            "Guaranteed cure for every disease"
+          ],
+          "content_tags": [
+            "synthetic"
+          ],
+          "copyright_status": "authorized",
+          "duration_seconds": 30,
+          "supplement_available": false,
+          "title": "Synthetic training material"
+        },
+        "source_id": "synthetic-main-03",
+        "missing_fields": [],
+        "material_version": "01958b3c9ab52a7f6dd14a8ed105c92fb1cc296496f7cd657226a7c25a39d3f7"
+      },
+      "error": null,
+      "evidence": {
+        "observed_at": "2026-11-01T09:00:00+08:00",
+        "material_version": "01958b3c9ab52a7f6dd14a8ed105c92fb1cc296496f7cd657226a7c25a39d3f7",
+        "rules_version": null,
+        "source_ids": []
+      }
+    },
+    "error_code": null,
+    "evidence_versions": {
+      "observed_at": "2026-11-01T09:00:00+08:00",
+      "material_version": "01958b3c9ab52a7f6dd14a8ed105c92fb1cc296496f7cd657226a7c25a39d3f7",
+      "rules_version": null,
+      "source_ids": []
+    },
+    "next_action": {
+      "event_index": 14,
+      "tool": "check_rules",
+      "decision_summary": "执行审核规则检查素材M03"
+    }
+  },
+  {
+    "schema_version": 1,
+    "run_id": "RUN-ca96f323121e407cb91323623f91917b",
+    "case_id": "E15",
+    "backend": "live",
+    "provider": "dashscope",
+    "model_id": "qwen-plus",
+    "event_index": 15,
+    "event_type": "tool_result",
+    "elapsed_ms": 22437,
+    "model_steps_used": 8,
+    "tool_calls_used": 7,
+    "step": 8,
+    "tool": "check_rules",
+    "tool_call_id": "call_22f52fb3b3084e3ba72dc8",
+    "arguments": {
+      "decision_summary": "执行审核规则检查素材M03",
+      "material_id": "M03"
+    },
+    "observation_summary": {
+      "tool_call_id": "call_22f52fb3b3084e3ba72dc8",
+      "ok": true,
+      "data": {
+        "review_status": "blocked",
+        "findings": [
+          {
+            "rule_id": "R-FORBIDDEN",
+            "severity": "BLOCK",
+            "field": "claims",
+            "message": "Unsupported absolute claim",
+            "source_id": "synthetic-main-03"
+          }
+        ],
+        "valid_until": "2026-11-30T16:00:00Z",
+        "material_version": "01958b3c9ab52a7f6dd14a8ed105c92fb1cc296496f7cd657226a7c25a39d3f7",
+        "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+        "source_ids": [
+          "synthetic-main-03"
+        ]
+      },
+      "error": null,
+      "evidence": {
+        "observed_at": "2026-11-01T09:00:00+08:00",
+        "material_version": "01958b3c9ab52a7f6dd14a8ed105c92fb1cc296496f7cd657226a7c25a39d3f7",
+        "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+        "source_ids": [
+          "synthetic-main-03"
+        ]
+      }
+    },
+    "error_code": null,
+    "evidence_versions": {
+      "observed_at": "2026-11-01T09:00:00+08:00",
+      "material_version": "01958b3c9ab52a7f6dd14a8ed105c92fb1cc296496f7cd657226a7c25a39d3f7",
+      "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+      "source_ids": [
+        "synthetic-main-03"
+      ]
+    },
+    "next_action": {
+      "event_index": 16,
+      "tool": "finish",
+      "decision_summary": "素材M03因含不支持的绝对声明（'Guaranteed cure for every disease'）被规则R-FORBIDDEN拦截，审核状态blocked，不可排期。"
+    }
+  }
+]

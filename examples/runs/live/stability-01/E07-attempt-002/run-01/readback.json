@@ -1,0 +1,33 @@
+{
+  "counts": {
+    "drafts": 1,
+    "draft_slots": 0
+  },
+  "drafts": [
+    {
+      "draft_id": "D-19e4c72a8e0845ca",
+      "request_id": "REQ-E07",
+      "material_id": "M01",
+      "channel": "short_video",
+      "account_id": "account-demo",
+      "revision": 1,
+      "proposed_at_utc": "2026-11-02T11:00:00Z",
+      "reservation_status": "pending",
+      "proposal_hash": "4c301181638c6bd9b252e241d66cda75932923d55ea56cbd1b89318254b45c5a",
+      "material_version": "ec555d19ec55688778cf2dd00bd79dcf2dc8581e6c9de9fe0fed48c2740a67e9",
+      "rules_version": "4b26f34042790400b3dfee6c6c92941e5dd7fb382a401ba6c46768ac2328762a",
+      "updated_at": "2026-11-01T09:00:00+08:00",
+      "proposed_at": "2026-11-02T19:00:00+08:00",
+      "confirmation": null
+    }
+  ],
+  "slots": [
+    {
+      "channel": "short_video",
+      "account_id": "account-demo",
+      "slot_start_utc": "2026-11-02T10:00:00Z",
+      "owner_type": "existing_schedule",
+      "owner_id": "fixture-18"
+    }
+  ]
+}

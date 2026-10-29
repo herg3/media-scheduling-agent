@@ -1,20 +1,20 @@
 # 02 技术方案与设计取舍
 
-状态：设计，未实现。输入输出的字段、枚举、工具和错误码以 [07-contracts.md](07-contracts.md) 为准；验收以 [03-evaluation.md](03-evaluation.md) 为准。
+状态：已实现本地 CLI 与合成数据闭环；本文按当前源码同步。输入输出的字段、枚举、工具和错误码以 [07-contracts.md](07-contracts.md) 为准；验收以 [03-evaluation.md](03-evaluation.md) 为准。
 
 ## 1. 技术选择
 
 | 选择 | 采用原因 | 代价与约束 |
 |---|---|---|
-| Python 3.12 | 工具函数、JSON、CLI 和测试实现直接 | 当前默认 Python 3.9.21，需先建立目标环境 |
+| Python >=3.12（本机 3.13.14） | 工具函数、JSON、CLI 和测试实现直接 | 已使用独立虚拟环境，不修改系统默认解释器 |
 | 原生单 Agent 循环 | 模型动作、观察与副作用容易检查；不额外引入框架状态抽象 | 自行处理消息关联、Schema、预算与日志 |
-| Pydantic 2 系列 | 校验请求、动作和输出 | 开发时锁定确切版本，不能只写“最新版” |
+| Pydantic 2 系列 | 严格校验业务请求；动作使用 dataclass，输出和观察使用 dict | 开发时锁定确切版本，不能只写“最新版” |
 | httpx | 封装一个经验证支持工具调用的模型接口 | 兼容 API 不等于所有模型行为兼容 |
 | SQLite | 单机持久化、唯一约束和事务足够覆盖本题 | 单写者；不宣称分布式或生产容量 |
-| 标准库 argparse / zoneinfo | 减少 CLI 依赖，明确时区 | Windows 显式依赖 tzdata |
+| 标准库 argparse / datetime | 减少 CLI 依赖，明确时区 | 固定 +08:00，仅接受 Asia/Shanghai；没有使用 zoneinfo，tzdata 仍在依赖清单中 |
 | pytest | 断言状态、调用、错误恢复和数据库结果 | 离线测试不能替代真实模型评估 |
 
-开发时同时锁定运行依赖和测试依赖，记录 Python、SQLite、模型 ID、提供方及依赖版本。当前不指定一个未经本机验证的模型型号，也不默认任何服务端都支持相同参数。
+开发时同时锁定运行依赖和测试依赖，记录 Python、SQLite、模型 ID、提供方及依赖版本。当前 live 适配器通过 HTTPX 调用兼容 Chat Completions 工具协议；DashScope 默认模型为 qwen-plus。具体试次模型和提供方以运行 manifest 为准，不推定其他服务兼容。
 
 比较过的替代方案：LangGraph 适合复杂恢复和持久工作流，本题暂不需要；全条件分支实现便于测试，但无法独立满足模型动态决策要求。采用原生循环，保留以后替换模型适配器的边界。
 
@@ -41,7 +41,7 @@ flowchart TD
 
 | 文件 | 职责 |
 |---|---|
-| src/scheduling_agent/contracts.py | 输入输出、工具结果、动作和状态 Schema |
+| src/scheduling_agent/contracts.py | Pydantic 请求、动作 dataclass、DomainError、时间与内容摘要 |
 | src/scheduling_agent/agent.py | 有界循环；每轮把工具观察返回模型 |
 | src/scheduling_agent/model.py | 适配器协议、真实模型、离线 Mock |
 | src/scheduling_agent/prompts.py | 工具职责、约束及简短决策依据要求 |
@@ -50,9 +50,9 @@ flowchart TD
 | src/scheduling_agent/policy.py | 规则、原授权、确认和保存前置条件 |
 | src/scheduling_agent/evidence.py | Trace、已知事实、可信状态输出 |
 | src/scheduling_agent/cli.py | init-db、run、confirm、show-draft、evaluate 命令 |
-| src/scheduling_agent/fixtures.py | 合成数据装载、仅测试环境故障注入 |
+| src/scheduling_agent/evaluation.py | 独立场景装配、评估与结果核对；初始化由 Repository.initialize 完成 |
 
-这里列的是拟创建文件，本轮没有生成源代码。
+以上模块已存在。未创建 fixtures.py；没有完整输出 Pydantic 模型，公开 JSON 由 evidence.py 依据上下文与读回事实组装。
 
 ## 3. 模型循环与程序门禁
 
@@ -68,7 +68,7 @@ flowchart TD
 
 模型原文不直接决定 saved、confirmed 或 reserved。它可以提出建议和简短决策说明，但这些字段由工具结果及提交后的状态生成。
 
-模型一次返回多个工具调用时，不执行其中任何副作用，为各调用返回协议错误并允许一次修正。累计两次非法模型响应后结束为 failed；所有尝试仍受全局上限约束。
+模型一次返回多个工具调用时，不执行其中任何副作用，返回协议纠正消息并允许一次修正。累计两次非法模型响应后终止为 INVALID_MODEL_ACTION，未完成项为 incomplete；所有尝试仍受全局上限约束。
 
 不保存模型内部思维过程。只记录对用户有意义的简短动作依据，例如“原时段占用，查询同日其他候选”；若模型未提供该说明，记录缺失，不由测试脚本伪造为模型表述。
 
@@ -90,7 +90,7 @@ flowchart TD
 
 素材读取返回版本、来源、元数据和缺失项；补充资料按 material_id 查询，与主资料一起形成规范化的素材视图。合并顺序由程序确定，冲突字段返回显式资料冲突，不让模型擅自覆盖。
 
-规则检查工具自己读取规范化视图，模型不能传一份“已审核通过”的元数据替代真实资料。规则按规则文件版本执行，返回 rule_id 和事实字段：
+规则检查工具自己读取规范化视图，模型不能传一份“已审核通过”的元数据替代真实资料。规则按当前数据库定义执行，规则版本为规则集合内容摘要，返回 rule_id 和事实字段：
 
 - 缺少必要授权：needs_information，可尝试补查。
 - 确定禁用内容或明确授权过期：blocked。
@@ -158,7 +158,7 @@ pending 保存时空闲也不保证之后持续空闲；其不占位，用户确
 
 默认全局上限：24 次模型请求、20 次工具尝试、180 秒。任何一个先达到就停止新动作，已成功保存的草稿保留。未完成项标记 incomplete，说明 MODEL_STEP_LIMIT、TOOL_CALL_LIMIT 或 DEADLINE_EXCEEDED。
 
-每次模型请求超时不超过 30 秒，并受剩余全局时间限制。SQLite 等待不超过 2 秒，且不能超过剩余时间。模型网络失败无自动后台重试，报告 MODEL_UNAVAILABLE；业务工具瞬时失败可由模型决定有限重试，同一工具同参数最多尝试两次。
+每次模型请求超时不超过 30 秒，并受剩余全局时间限制。SQLite 连接固定 timeout=2 秒；当前未将锁等待动态缩短至剩余整体时间，这是与严格截止时间目标的差距。模型网络失败无自动后台重试，报告 MODEL_UNAVAILABLE；业务工具瞬时失败可由模型决定有限重试，同一工具同参数最多尝试两次。
 
 计算同参数重试次数时忽略 decision_summary 等日志字段，按工具名、素材、时间范围和 expected_revision 等业务参数形成计数键；防止模型仅改解释文字就绕过次数限制。
 
@@ -178,6 +178,6 @@ Trace 至少记录 run_id、backend、模型标识、输入指纹、资料版本
 
 ## 11. 文档和证据的可信边界
 
-本方案是待实施设计，不是运行结论。技术参考用于核对接口和数据库行为，没有搜索或公开考题。代码完成后，根据实际实现同步本文；不保留与代码不一致的“理想设计”。
+本文描述当前实现及明确差距，测试与真实模型结果单独见评估材料。技术参考用于核对接口和数据库行为，没有搜索或公开考题。代码完成后，根据实际实现同步本文；不保留与代码不一致的“理想设计”。
 
-尚未验证：模型稳定性、确切依赖版本、真实调用费用、跨进程竞争结果及全部运行命令。
+已具备离线测试与 live 运行证据目录；具体结果以评估汇总和各试次 manifest 为准。本方案不据此宣称生产稳定性或完整费用核算。候选人独立复现与远端交付仍需单列。

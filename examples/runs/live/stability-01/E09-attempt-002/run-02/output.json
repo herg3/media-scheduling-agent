@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "run_id": "RUN-7c9ed1b9e7ab4166a88f448ec52bcfdb",
+  "backend": "live",
+  "run_status": "incomplete",
+  "termination_reason": "FINISHED",
+  "items": [
+    {
+      "material_id": "M01",
+      "task_status": "failed",
+      "review_status": "pass",
+      "warnings": [],
+      "reason_code": "CONFIRMATION_MISMATCH",
+      "risks": [],
+      "original_requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      },
+      "suggested_at": "2026-11-02T20:00:00+08:00",
+      "effective_at": null,
+      "confirmation_status": "pending",
+      "pending_questions": [
+        "是否接受将M01排期从原定2026-11-02T18:00:00+08:00改为2026-11-02T20:00:00+08:00？"
+      ],
+      "draft": {
+        "draft_id": "D-95a08ab2252141ab",
+        "revision": 1,
+        "reservation_status": "pending",
+        "save_status": "failed",
+        "error_code": "CONFIRMATION_MISMATCH",
+        "is_current": false
+      },
+      "evidence_refs": [
+        "call_b9ee960737864d99bf0bf3",
+        "call_1553de77ab1e4332be55e0",
+        "call_08d855fd496a460981b6f4",
+        "call_d7e28ae3902a42f3ab54b5",
+        "call_42a7e472fb60418abfaaf6",
+        "call_68536c6760354294b9cd75",
+        "call_62267563dfaf41d48c2dba",
+        "call_b89b136500084d7bbd566d",
+        "call_356e906782654b3a83e430",
+        "call_45abdd8e58bb4f86b20064"
+      ],
+      "message": "本次草稿保存失败，未记为完成。"
+    }
+  ],
+  "usage": {
+    "model_steps_used": 11,
+    "tool_calls_used": 10,
+    "elapsed_ms": 37462,
+    "provider_usage": {
+      "total_tokens": 43364,
+      "completion_tokens": 915,
+      "prompt_tokens": 42449
+    }
+  },
+  "trace_path": "trace.jsonl",
+  "warnings": [
+    "仅合成资料审核与本地排期草稿；尚未发布。"
+  ]
+}

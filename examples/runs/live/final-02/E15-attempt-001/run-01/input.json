@@ -1,0 +1,22 @@
+{
+  "request_id": "REQ-E15",
+  "channel": "short_video",
+  "account_id": "account-demo",
+  "timezone": "Asia/Shanghai",
+  "items": [
+    {
+      "material_id": "M01",
+      "requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      }
+    },
+    {
+      "material_id": "M03",
+      "requirement": {
+        "mode": "EXACT",
+        "requested_at": "2026-11-02T18:00:00+08:00"
+      }
+    }
+  ]
+}

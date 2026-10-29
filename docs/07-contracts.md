@@ -1,6 +1,6 @@
 # 07 接口与数据契约
 
-状态：设计。此文档是字段、枚举、时间语义和错误码的权威定义。所有 JSON 片段都是规格示例，不是运行输出。
+状态：已实现接口同步；下列目标与实际差异显式注明。此文档是字段、枚举、时间语义和错误码的权威定义。所有 JSON 片段都是规格示例，不是运行输出。
 
 ## 1. 输入
 
@@ -79,6 +79,7 @@ proposal_hash = SHA-256(规范化的 request_fingerprint、material_id、propose
 | draft | draft_id、revision、reservation_status、save_status、error_code、is_current |
 | evidence_refs | 对应工具调用 ID、素材/规则版本和读回证明 |
 | message | 依据可信状态生成的用户可读说明 |
+| reason_code | 单项未完成原因；可能为错误码、NO_AVAILABLE_SLOT 或 INSUFFICIENT_EXECUTION_EVIDENCE |
 
 reservation_status：none / pending / reserved。
 
@@ -86,7 +87,7 @@ save_status：not_attempted / saved / already_exists / failed / unknown。
 
 saved 表示本轮提交后读回成功；already_exists 表示核实既有记录且未进行新写入；failed 表示已知本次操作未提交；unknown 表示是否提交尚未核实。先前已保存草稿与本次更新失败可以同时出现：保留旧 draft_id / revision，save_status=failed，task_status 不得为 completed。
 
-is_current 表示草稿是否适用于当前已核实事实。旧建议已被占用、事实版本变化或新建议未保存时为 false；尚未核实为 null。suggested_at 可以是本轮新建议，但旧 draft 必须 is_current=false，不能把旧草稿 ID 当作新建议已保存的凭证。
+is_current 表示草稿是否适用于当前已核实事实。旧建议已被占用、事实版本变化或新建议未保存时为 false；设计允许尚未核实为 null；当前实现保守返回 false。suggested_at 可以是本轮新建议，但旧 draft 必须 is_current=false，不能把旧草稿 ID 当作新建议已保存的凭证。
 
 示例：冲突后的预期字段片段，**不代表已经运行**：
 
@@ -233,7 +234,7 @@ CLI 退出码设计：0=全部完成，2=业务待确认/待补充/阻断，3=�
 
 ## 6. 确认命令
 
-以下仅为将来接口：
+以下为已实现命令格式：
 
 ~~~powershell
 python -m scheduling_agent confirm --draft-id DRAFT-001 --revision 1 --proposed-at "2026-11-02T19:00:00+08:00" --backend live --db work/live.sqlite --output-dir work/confirm-DRAFT-001
@@ -255,15 +256,15 @@ already reserved 且参数完全匹配的重复确认返回原记录，不再占
 
 数据只在显式 init-db 命令中从合成 JSON 装载；已有数据库拒绝覆盖。重跑不自动清库或重置排期；修改测试场景使用独立数据库或测试专用事务更新，且记录变化。业务工具不修改素材和规则。
 
-init-db 将 fixture-manifest.json 的版本、内容摘要、合成时钟存入 fixture_meta。run/confirm 从该元信息注入工具时钟，并在输出和manifest明确标记 synthetic_clock；它不是系统当前时间，也不能由模型修改。evaluate 每个独立试次初始化一次，同一试次的重复与确认保留数据库。
+实际 init-db 在 fixture_meta(singleton_key, manifest_json) 保存完整 fixture-manifest.json；合成时钟从该 JSON 读取，未设独立 content_hash 或 synthetic_clock 列。数据文件和源码摘要由每次证据导出的 manifest.source_file_sha256 / source_tree_sha256 记录，不宣称初始化时已将全量内容摘要存入数据库。run/confirm 从该元信息注入工具时钟，并在输出和manifest明确标记 synthetic_clock；它不是系统当前时间，也不能由模型修改。evaluate 每个独立试次初始化一次，同一试次的重复与确认保留数据库。
 
 | 表 | 关键字段与约束 |
 |---|---|
-| materials | material_id 主键，metadata_json，source_id，version |
-| supplements | supplement_id 主键，material_id 外键，fields_json，source_id，version |
-| rules | rule_id 主键，definition_json，version，enabled |
-| fixture_meta | singleton_key 主键，manifest_json，synthetic_clock，content_hash |
-| requests | request_id 主键，fingerprint NOT NULL，input_json，created_at |
+| materials | material_id 主键，metadata_json，source_id（version 为读取时计算摘要） |
+| supplements | supplement_id 主键，material_id 外键，fields_json，source_id（无独立 version 列） |
+| rules | rule_id 主键，definition_json（enabled 在 JSON 内，版本读取时计算） |
+| fixture_meta | singleton_key 主键，manifest_json |
+| requests | request_id 主键，fingerprint NOT NULL，input_json（无 created_at 列） |
 | drafts | draft_id 主键，request_id 外键，material_id 外键，revision，proposed_at_utc，reservation_status，proposal_hash，material_version，rules_version，confirmation_json，updated_at |
 | slots | channel，account_id，slot_start_utc，owner_type，owner_id |
 
@@ -285,25 +286,25 @@ drafts 同时存 channel、account_id，必须由原请求注入并与原请求�
 
 slots 的 owner_type=existing_schedule 或 draft；owner_id 指向合成已有排期 ID 或 draft_id。草稿和占位在同一事务内写入；启用 PRAGMA foreign_keys=ON。draft 所有者的完整性除外键可表达的部分外，也由事务代码验证，不能声称 owner_id 的多态引用全部由外键保证。
 
-版本说明：material_version 是规范化主资料加已采用补充资料的内容摘要；rules_version 是启用规则集合摘要；schedule_version 是当前资源占用快照摘要。它们是可复核版本，不使用每次变化的时间戳充当内容版本。
+版本说明：material_version 是规范化主资料加已采用补充资料的内容摘要；rules_version 实际是当前全部规则定义集合摘要（含 disabled 定义，执行时仅启用规则生效）；schedule_version 是当前资源占用快照摘要。它们是可复核版本，不使用每次变化的时间戳充当内容版本。
 
 ## 8. 配置契约
 
-未来 .env.example 只列名称与安全示例，不包含真实密钥；程序直接读取环境变量，不要求自动加载 .env。
+当前 .env.example 只列名称与安全示例，不包含真实密钥；程序直接读取环境变量，不要求自动加载 .env。
 
 | 名称 | 含义与默认值 |
 |---|---|
 | LLM_API_KEY | live 必填；mock 不读取 |
 | LLM_BASE_URL | live 必填；来自实际提供方配置 |
 | LLM_MODEL | live 必填；记录实际模型 ID |
-| LLM_TIMEOUT_SECONDS | 默认 30，上限受剩余总时间限制 |
+| 单请求模型超时 | 当前代码使用 min(30, 剩余总时间)，不读取 LLM_TIMEOUT_SECONDS |
 | MAX_MODEL_STEPS | 默认 24 |
 | MAX_TOOL_CALLS | 默认 20 |
 | MAX_RUNTIME_SECONDS | 默认 180 |
 
 不通过配置暴露 force_confirm、skip_review 或 publish。live 配置缺失时明确失败，不降级 Mock。内部故障注入只能在测试装配层或显式测试场景启动，模型不能调用。
 
-运行依赖计划：Pydantic 2 系列、httpx、tzdata。测试依赖计划：pytest。精确版本、完整锁定文件和哈希/来源在实现环境中确定，当前不虚构已验证版本组合。
+运行依赖：Pydantic 2 系列、httpx、tzdata。测试依赖为 pytest；确切版本见 requirements.txt / requirements-dev.txt 与运行环境证据。Python 约束 >=3.12，本机运行版本 3.13.14。
 
 ## 9. 错误码
 
@@ -337,3 +338,15 @@ model_steps_used, tool_calls_used, error_code
 工具结果事件的 next_action 在模型下一次响应到达时关联填充为另一个事件引用；上限结束时指向 termination。不预先写入“下一步”。原始事件保持追加，关联索引写入 trace-summary.json，避免修改原始 JSONL。
 
 另外保存 model-messages.json：仅用户合成输入、公开动作说明、工具调用和返回，不含 API Header、密钥和模型内部思维过程。每条工具响应关联真实 tool_call_id。原始服务响应不直接完整落盘，以免携带不需要的敏感字段。
+
+## 11. 当前 Python 接口与输出实现
+
+SchedulingRequest / SchedulingItem / ExactRequirement / WindowRequirement 使用 Pydantic；ModelAction 为 dataclass，ToolObservation 为 dict。未实现 RunResult、ItemResult、ConfirmationContext 等完整 Pydantic 输出模型，JSON 字段由 evidence.item_result 与 run_agent 组装。
+
+ToolContext(repo, request, material_id, confirmation=None, faults={}, ...) 是程序构造的 dataclass，另维护 evidence、observations、attempts、suggested_at、last_save、last_error、save_error。execute_tool(call, context) 接受 ModelAction。run_agent(request, model, repo, *, confirmation=None, faults=None, max_model_steps=24, max_tool_calls=20, max_runtime_seconds=180, output_dir=None, case_id=None) 返回 dict。
+
+保存错误单独存于 save_error；后续只读工具成功不会清除它，避免历史草稿被误认成本次保存成功。保存成功或 get_draft 对 SAVE_OUTCOME_UNKNOWN 完成核实后才清除相应保存错误。提交后的读回异常保持 SAVE_OUTCOME_UNKNOWN；提交前真正 SQLite BUSY/LOCKED 为可重试 DB_BUSY，其他 OperationalError 为不可重试 SAVE_FAILED。
+
+material_version 为主资料（含 source_id）及当前已采用补充资料的内容摘要；未调用补查时不包含补充。规则实际 ID 为 R-REQUIRED、R-AUTH、R-FORBIDDEN、R-REVIEW；具体定义见 data/rules.json。
+
+当前 account_id 还要求 account- 前缀和合成标识格式；时间窗口限制在同一业务日期。默认配置可从 DASHSCOPE_API_KEY 推导 DashScope HTTPS 接口与 qwen-plus；LLM_API_KEY / LLM_BASE_URL / LLM_MODEL 可显式覆盖。未提供合法配置时不降级 Mock。
