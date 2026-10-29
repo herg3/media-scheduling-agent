@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "media-scheduling-agent"
+version = "0.1.0"
+description = "Evidence-grounded material review and scheduling draft agent"
+requires-python = ">=3.12"
+dependencies = ["pydantic>=2,<3", "httpx>=0.28,<1", "tzdata"]
+
+[project.scripts]
+scheduling-agent = "scheduling_agent.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-ra"
+markers = ["live: explicitly enabled billable model evaluation"]

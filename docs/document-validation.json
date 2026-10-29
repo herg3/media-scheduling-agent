@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "checked_at_utc": "2026-10-29T07:18:47.653170+00:00",
+  "scope": "Documentation static validation only; not business tests or live model evals.",
+  "markdown_files": 11,
+  "required_files_checked": 12,
+  "local_links_checked": 14,
+  "json_examples_parsed": 4,
+  "functional_requirements": [
+    "FR-01",
+    "FR-02",
+    "FR-03",
+    "FR-04",
+    "FR-05",
+    "FR-06",
+    "FR-07",
+    "FR-08",
+    "FR-09",
+    "FR-10",
+    "FR-11",
+    "FR-12",
+    "FR-13",
+    "FR-14",
+    "FR-15",
+    "FR-16",
+    "FR-17"
+  ],
+  "requirements_with_test_mapping": 17,
+  "invariants": [
+    "INV-01",
+    "INV-02",
+    "INV-03",
+    "INV-04",
+    "INV-05",
+    "INV-06",
+    "INV-07",
+    "INV-08",
+    "INV-09",
+    "INV-10",
+    "INV-11",
+    "INV-12"
+  ],
+  "evaluation_cases": [
+    "E01",
+    "E02",
+    "E03",
+    "E04",
+    "E05",
+    "E06",
+    "E07",
+    "E08",
+    "E09",
+    "E10",
+    "E11",
+    "E12",
+    "E13",
+    "E14",
+    "E15",
+    "E16",
+    "E17",
+    "E18",
+    "E19",
+    "E20",
+    "E21",
+    "E22",
+    "E23"
+  ],
+  "business_tests_run": 0,
+  "live_evaluations_run": 0,
+  "errors": [],
+  "warnings": [],
+  "files": {
+    ".env.example": {
+      "sha256": "f4cbf49f8580d4007bec0cca0cbba00df228af4f62b3651bae8dac77c3873ef9",
+      "bytes": 493
+    },
+    "data/README.md": {
+      "sha256": "b69e9143ea508cf244d9dff80e207f62b8260632fb81b96819a9c287076c3d9a",
+      "bytes": 2568
+    },
+    "docs/01-requirements.md": {
+      "sha256": "81306b2bbe891214b2637d8da1504c616260d0e5d045e23e8b64e3dde401ce51",
+      "bytes": 8997
+    },
+    "docs/02-solution.md": {
+      "sha256": "d899733c9988621dd0214430b0659bdb786d813c08cf22edafb16cc674fbba03",
+      "bytes": 12475
+    },
+    "docs/03-evaluation.md": {
+      "sha256": "3d4c1f7134df1362aeb77a60d56cccd373f082dada8563ee8149a56b3fc6a6a8",
+      "bytes": 10774
+    },
+    "docs/04-ai-usage.md": {
+      "sha256": "7cda4fdb00d89af3e4b7308ff69a4d5685dcbcec93198a2b93facfcdc59363d7",
+      "bytes": 4218
+    },
+    "docs/05-retrospective.md": {
+      "sha256": "03aba436e22642287398bd15bf84ad0257fad7ccf01d79b10bfbe99e762d460a",
+      "bytes": 3662
+    },
+    "docs/06-development-plan.md": {
+      "sha256": "c95c9dd1a80392bdf29f80f2c292b7af165e581b100e04490a5171f0c052f791",
+      "bytes": 13921
+    },
+    "docs/07-contracts.md": {
+      "sha256": "9e4dfd324a967f2f7e665062951ea884e5869a0035295b61b37dabc84a85eced",
+      "bytes": 18664
+    },
+    "docs/08-submission-checklist.md": {
+      "sha256": "a91b78556089d0245a8aef369237b2636a02660f838eeb2e233e4aab5f754378",
+      "bytes": 4641
+    },
+    "docs/phase-log.json": {
+      "sha256": "2998a4666578c329d345288aeed5b42190ee57b14e66b97b8906bde3fb3179c8",
+      "bytes": 830
+    },
+    "examples/README.md": {
+      "sha256": "75610ba03f6704363cbd286fd8ee02d48fdaddb58488a7bb6d94b6d9433934e0",
+      "bytes": 1996
+    },
+    "README.md": {
+      "sha256": "468a29b5f030f2595c08eae3fd00c88e12a5501791b7aa404b7ce8457e993f50",
+      "bytes": 4326
+    }
+  }
+}
