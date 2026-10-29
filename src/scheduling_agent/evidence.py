@@ -8,7 +8,7 @@ import sqlite3
 import subprocess
 import sys
 
-from .contracts import display_time, parse_time
+from .contracts import DomainError, display_time, parse_time
 from .policy import is_originally_authorized
 
 
@@ -17,8 +17,14 @@ def item_result(context, termination_reason, questions):
     item = next(item for item in req.items if item.material_id == material)
     review = context.evidence.get("review") or {}
     status = review.get("review_status", "unknown")
-    draft = context.repo.read_draft(req.request_id, material)
     save = context.last_save
+    warnings = []
+    try:
+        draft = context.repo.read_draft(req.request_id, material)
+    except (sqlite3.Error, DomainError):
+        # A later read failure cannot erase a previously observed committed save.
+        draft = save
+        warnings.append("FINAL_READBACK_UNAVAILABLE")
     error = context.save_error or context.last_error
     is_current = bool(save and save.get("is_current"))
     save_status = save["save_status"] if save else "not_attempted"
@@ -79,6 +85,7 @@ def item_result(context, termination_reason, questions):
         reason_code = reason_code or "INSUFFICIENT_EXECUTION_EVIDENCE"
     return {
         "material_id": material, "task_status": task_status, "review_status": status,
+        "warnings": warnings,
         "reason_code": reason_code,
         "risks": review.get("findings", []),
         "original_requirement": item.requirement.model_dump(mode="json") if item.requirement else None,

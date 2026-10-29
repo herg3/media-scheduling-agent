@@ -3,5 +3,5 @@
     18
   ],
   "followup": "confirm",
-  "occupy_after": 19
+  "occupy_after_proposal": true
 }

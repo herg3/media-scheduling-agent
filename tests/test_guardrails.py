@@ -110,3 +110,31 @@ def test_unsupported_finish_records_grounding_warning(context):
     result = run_agent(context.request, UnsupportedFinish(), context.repo)
     assert result["items"][0]["task_status"] == "incomplete"
     assert "OUTPUT_GROUNDED_BY_EVIDENCE" in result["warnings"]
+
+
+def test_new_query_invalidates_saved_pending_proposal(context):
+    prepare(context)
+    assert save(context, "2026-11-02T19:00:00+08:00")["ok"]
+    context.repo.add_existing_slot("short_video", "account-demo", "2026-11-02T19:00:00+08:00", "NEW")
+    assert call(context, "query_slots", search_start="2026-11-02T19:00:00+08:00",
+                search_end="2026-11-02T20:00:00+08:00")["ok"]
+    result = item_result(context, "FINISHED", [])
+    assert result["task_status"] == "incomplete"
+    assert result["draft"]["save_status"] == "saved"
+    assert result["draft"]["is_current"] is False
+    assert result["reason_code"] in {"SLOT_CONFLICT", "NO_AVAILABLE_SLOT"}
+
+
+def test_final_readback_failure_preserves_known_saved_snapshot(context, monkeypatch):
+    import sqlite3
+    prepare(context)
+    assert save(context)["ok"]
+    old_id = context.last_save["draft_id"]
+    def fail(*args):
+        raise sqlite3.OperationalError("database unavailable")
+    monkeypatch.setattr(context.repo, "read_draft", fail)
+    result = item_result(context, "FINISHED", [])
+    assert result["task_status"] == "completed"
+    assert result["draft"]["draft_id"] == old_id
+    assert result["draft"]["save_status"] == "saved"
+    assert "FINAL_READBACK_UNAVAILABLE" in result["warnings"]

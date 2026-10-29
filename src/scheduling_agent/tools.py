@@ -117,6 +117,11 @@ def execute_tool(call, context: ToolContext):
                     raise DomainError("INVALID_INPUT", "时段查询必须为+08:00整点。")
             data = repo.query_slots(context.request, material, args["search_start"], args["search_end"])
             context.evidence["queried_slots"] = [utc_time(slot) for slot in data["available_slots"]]
+            if context.last_save and utc_time(context.last_save["proposed_at"]) in {
+                    utc_time(slot) for slot in data["occupied_slots"]}:
+                context.last_save = {**context.last_save, "is_current": False}
+                context.last_error = {"code": "SLOT_CONFLICT", "message": "已保存建议时间现已被占用。",
+                                      "retryable": False}
         elif name == "get_draft":
             if context.faults.get(name) == "always":
                 raise DomainError("TOOL_UNAVAILABLE", "测试注入：草稿查询不可用。", retryable=True)

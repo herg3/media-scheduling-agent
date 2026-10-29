@@ -24,3 +24,22 @@ def test_confirmation_assertion_evidence(tmp_path):
     assert rows['E07']['revision']==[2]
     assert rows['E08']['confirmation_status']==['confirmed']
     assert rows['E09']['reservation_status']==['pending']
+
+def test_injection_occupies_actual_proposal(tmp_path,monkeypatch):
+    import json, shutil
+    from scheduling_agent import evaluation
+    cases=tmp_path/'cases';shutil.copytree('examples/cases/E09',cases/'E09')
+    fixture=json.loads((cases/'E09/fixture.json').read_text())
+    fixture['occupy_after_proposal']=True
+    fixture.pop('occupy_after',None)
+    (cases/'E09/fixture.json').write_text(json.dumps(fixture))
+    original=evaluation.run_agent
+    def choose_twenty(request,model,repo,**kwargs):
+        if not kwargs.get('confirmation'):
+            repo.add_existing_slot('short_video','account-demo','2026-11-02T19:00:00+08:00','test-19')
+        return original(request,model,repo,**kwargs)
+    monkeypatch.setattr(evaluation,'run_agent',choose_twenty)
+    summary=evaluation.evaluate('mock',cases,tmp_path/'result')
+    changes=json.loads((tmp_path/'result/E09-attempt-001/changes.json').read_text())
+    assert changes[0]['at']=='2026-11-02T20:00:00+08:00'
+    assert summary['failed']==0, summary

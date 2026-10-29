@@ -27,12 +27,18 @@ def evaluate(backend, cases, output_dir, *, case_ids=None, repeats=1, limits=Non
                 for hour in fixture.get('occupied_hours',[]):
                     repo.add_existing_slot('short_video','account-demo',f'2026-11-02T{hour:02d}:00:00+08:00',f'fixture-{hour}')
                 runs = []
+                changes = []
                 count = fixture.get('subruns',1)
                 if fixture.get('followup'): count = 2
                 for subrun in range(count):
                     confirmation = None
-                    if subrun and fixture.get('occupy_after'):
-                        hour = fixture['occupy_after']; repo.add_existing_slot('short_video','account-demo',f'2026-11-02T{hour:02d}:00:00+08:00','injected-after')
+                    if subrun and (fixture.get('occupy_after') or fixture.get('occupy_after_proposal')):
+                        first_draft = repo.get_draft_by_id(runs[0]['items'][0]['draft']['draft_id'])
+                        at = first_draft['proposed_at'] if fixture.get('occupy_after_proposal') else f"2026-11-02T{fixture['occupy_after']:02d}:00:00+08:00"
+                        before = repo.readback()
+                        repo.add_existing_slot('short_video','account-demo',at,'injected-after')
+                        changes.append({'action':'occupy_proposed_slot','at':at,'draft_id':first_draft['draft_id'],'before':before,'after':repo.readback()})
+                        (run_root/'changes.json').write_text(json.dumps(changes,ensure_ascii=False,indent=2),encoding='utf-8')
                     if subrun and fixture.get('followup') == 'confirm':
                         draft = repo.get_draft_by_id(runs[0]['items'][0]['draft']['draft_id'])
                         confirmation = repo.confirmation(draft['draft_id'],draft['revision'],draft['proposed_at'])
@@ -44,6 +50,9 @@ def evaluate(backend, cases, output_dir, *, case_ids=None, repeats=1, limits=Non
                 for field in ('reservation_status', 'revision'):
                     actual[field] = [item['draft'][field] for item in items]
                 actual['original_requested_at'] = [(item.get('original_requirement') or {}).get('requested_at') for item in items]
+                actual['first_suggested_at'] = [item['suggested_at'] for item in runs[0]['items']]
+                actual['suggestion_changed'] = actual['first_suggested_at'] != actual['suggested_at']
+                actual['not_completed'] = all(item['task_status'] != 'completed' for item in items)
                 actual['risk_ids'] = [[risk['rule_id'] for risk in item['risks']] for item in items]
                 if count > 1:
                     actual['same_draft_id'] = runs[0]['items'][0]['draft']['draft_id'] == runs[-1]['items'][0]['draft']['draft_id']

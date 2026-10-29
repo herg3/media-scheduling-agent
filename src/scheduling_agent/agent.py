@@ -134,6 +134,10 @@ def run_agent(request, model, repo, *, confirmation=None, faults=None,
         result["warnings"].append("离线Mock/Fake只证明流程，不证明真实模型决策。")
     if unsupported_finish:
         result["warnings"].append("OUTPUT_GROUNDED_BY_EVIDENCE")
+    for item in results:
+        for warning in item.get("warnings", []):
+            if warning not in result["warnings"]:
+                result["warnings"].append(warning)
     emit("run_finished", termination_reason=termination, run_status=run_status)
     if output_dir:
         write_run(output_dir, request.model_dump(mode="json"), result, events, message_groups, repo, model)
