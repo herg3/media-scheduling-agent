@@ -30,5 +30,7 @@
     "Private GitHub creation/push/reviewer access and remote final SHA",
     "E09 automatically saving a revised pending proposal after confirmation conflict is not implemented successfully in final live runs",
     "Production authentication, real media review, real publishing and strict remaining-budget SQLite lock timeout are outside current implementation"
-  ]
+  ],
+  "historical_validation_record": true,
+  "remote_status_reference": "github-delivery.json"
 }

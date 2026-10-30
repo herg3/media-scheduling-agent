@@ -1,0 +1,10 @@
+{
+  "updated_on": "2026-10-30",
+  "url": "https://github.com/herg3/media-scheduling-agent",
+  "private": true,
+  "branch": "feat/core-agent",
+  "push_verified_commit_before_document_sync": "ecaa050906cd8d4c773595804df4c7d84ea5dc25",
+  "reviewer_access_configured": false,
+  "reviewer_account_provided": false,
+  "final_sha_note": "Final SHA is read after this documentation commit and verified against the remote, then supplied outside the repository to avoid self-reference."
+}

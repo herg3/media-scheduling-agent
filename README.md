@@ -15,7 +15,7 @@ Python单Agent，原生工具调用循环，SQLite持久化，CLI运行。**只�
 | AI辅助与个人贡献边界 | [AI使用记录](docs/04-ai-usage.md)、[实际复盘](docs/05-retrospective.md) |
 | 开发顺序与最终提交 | [开发计划](docs/06-development-plan.md)、[提交清单](docs/08-submission-checklist.md) |
 
-当前本地已有完整代码：74项自动化测试通过、Mock13/13、最终live13/13、四类重复评估12/12。通过数与失败限制以[实际评估](docs/03-evaluation.md)为准；GitHub尚未上传。
+当前本地已有完整代码：74项自动化测试通过、Mock13/13、最终live13/13、四类重复评估12/12。通过数与失败限制以[实际评估](docs/03-evaluation.md)为准；已推送至[私有GitHub仓库](https://github.com/herg3/media-scheduling-agent)，评审访问权限待配置。
 
 ## 安装
 
@@ -110,4 +110,4 @@ E04原要求18:00被占用，19:00可用。模型保存19:00的pending建议，�
 - CLI确认代表本地操作者授权，没有生产身份认证。
 - reserved草稿不能自动迁移；取消、真实平台同步和部署未实现。
 - 固定合成时钟2026-11-01，业务日期2026-11-02，输出明确标记。
-- 候选人独立复现、GitHub上传和评审权限尚待本人完成。
+- 候选人独立复现尚未记录；GitHub已推送，指定评审账号权限待配置。
